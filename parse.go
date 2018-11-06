@@ -5,8 +5,8 @@ import (
 	"fmt"
 )
 
-// Unmarshals states from GET /states/all from OpenSky
-func (s *state) UnmarshalJSON(data []byte) error {
+// UnmarshalJSON states from GET /states/all from OpenSky
+func (s *State) UnmarshalJSON(data []byte) error {
 	var v []interface{}
 	if err := json.Unmarshal(data, &v); err != nil {
 		fmt.Printf("Error whilde decoding %v\n", err)

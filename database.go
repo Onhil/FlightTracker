@@ -6,6 +6,7 @@ import (
 	"github.com/globalsign/mgo/bson"
 )
 
+// Init checks if the Database actually works
 func (db *Database) Init() {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
@@ -15,6 +16,7 @@ func (db *Database) Init() {
 	defer session.Close()
 }
 
+// Add adds the state s to the database
 func (db *Database) Add(s state) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
@@ -29,7 +31,8 @@ func (db *Database) Add(s state) {
 	}
 }
 
-func (db *Database) AddMany(s []state) {
+// AddMany adds the list s of states to the database
+func (db *Database) AddMany(s []State) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -40,6 +43,7 @@ func (db *Database) AddMany(s []state) {
 	session.DB(db.DatabaseName).C(db.CollectionName).Bulk().Insert(s)
 }
 
+// Count Counts the elements in the database
 func (db *Database) Count() int {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
@@ -57,7 +61,8 @@ func (db *Database) Count() int {
 	return count
 }
 
-func (db *Database) GetICAO24(keyID string) (state, bool) {
+// GetICAO24 gets the ICA024 from the database or returns false and an empty state object
+func (db *Database) GetICAO24(keyID string) (State, bool) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -65,7 +70,7 @@ func (db *Database) GetICAO24(keyID string) (state, bool) {
 
 	defer session.Close()
 
-	State := state{}
+	State := State{}
 	err = session.DB(db.DatabaseName).C(db.CollectionName).Find(bson.M{"icao24": keyID}).One(&State)
 	if err != nil {
 		return State, false
@@ -74,7 +79,8 @@ func (db *Database) GetICAO24(keyID string) (state, bool) {
 	return State, true
 }
 
-func (db *Database) GetOriginCountry(keyID string) ([]state, bool) {
+// GetOriginCountry returns the origin country if it is in the database and an empty object and false if not
+func (db *Database) GetOriginCountry(keyID string) ([]State, bool) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -82,7 +88,7 @@ func (db *Database) GetOriginCountry(keyID string) ([]state, bool) {
 
 	defer session.Close()
 
-	State := []state{}
+	State := []State{}
 	err = session.DB(db.DatabaseName).C(db.CollectionName).Find(bson.M{"origincountry": keyID}).All(&State)
 	if err != nil {
 		return State, false

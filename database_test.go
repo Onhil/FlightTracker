@@ -4,6 +4,7 @@ import (
 	"github.com/globalsign/mgo"
 	"testing"
 )
+
 func setupDB(t *testing.T) *Database {
 	db := Database{
 		"mongodb://localhost",
