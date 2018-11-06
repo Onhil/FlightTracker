@@ -5,6 +5,9 @@ import (
 	"os"
 )
 
+// Structs
+
+// state os a struct witch
 type state struct {
 	Icao24        string // Unique ICAO 24-bit address of the transponder in hex string representation.
 	Callsign      string // Callsign of the vehicle (8 chars). Can be null if no callsign has been received.
@@ -26,9 +29,9 @@ type state struct {
 }
 
 // ParaglidingDB holds database basic data
-type DBValues struct {
-	DatabaseURL         string
-	DatabaseName        string
+type Database struct {
+	HostURL string
+	DatabaseName string
 	CollectionName string
 }
 
@@ -47,10 +50,15 @@ type flights struct {
 	// ArrivalAirportCandidatesCount    int    // Number of other possible departure airports. These are airports in short distance to estArrivalAirport.
 }
 
+// Variables
+var DBValues Database
+
+// Functions
+
 func main() {
 
 	// Database values
-	Database := DBValues{
+	DBValues = Database{
 		"mongodb://dataAccess:gettingData123@ds253203.mlab.com:53203/opensky",
 		"States",
 		"opensky",
@@ -63,5 +71,5 @@ func main() {
 	}
 
 	// Handle functions
-	
+
 }

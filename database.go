@@ -6,13 +6,7 @@ import (
 	"github.com/globalsign/mgo/bson"
 )
 
-type database struct {
-	HostURL string
-	DatabaseName string
-	CollectionName string
-}
-
-func (db *database) Init() {
+func (db *Database) Init() {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -21,7 +15,7 @@ func (db *database) Init() {
 	defer session.Close()
 }
 
-func (db *database) Add(s state) {
+func (db *Database) Add(s state) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -35,7 +29,7 @@ func (db *database) Add(s state) {
 	}
 }
 
-func (db *database) AddMany(s []state) {
+func (db *Database) AddMany(s []state) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -46,7 +40,7 @@ func (db *database) AddMany(s []state) {
 	session.DB(db.DatabaseName).C(db.CollectionName).Bulk().Insert(s)
 }
 
-func (db *database) Count() int {
+func (db *Database) Count() int {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -63,7 +57,7 @@ func (db *database) Count() int {
 	return count
 }
 
-func (db *database) GetICAO24(keyID string) (state, bool) {
+func (db *Database) GetICAO24(keyID string) (state, bool) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -80,7 +74,7 @@ func (db *database) GetICAO24(keyID string) (state, bool) {
 	return State, true
 }
 
-func (db *database) GetOriginCountry(keyID string) ([]state, bool) {
+func (db *Database) GetOriginCountry(keyID string) ([]state, bool) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
