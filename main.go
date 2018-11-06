@@ -1,6 +1,8 @@
 package main
 
 import (
+	"html/template"
+	"net/http"
 	"os"
 )
 
@@ -55,10 +57,26 @@ type flights struct {
 	// ArrivalAirportCandidatesCount    int    // Number of other possible departure airports. These are airports in short distance to estArrivalAirport.
 }
 
+type PlaneMarker struct {
+	Lat              float64
+	Long             float64
+	Icao24           string
+	Callsign         string
+	DepartureAirport string
+	DepartureTime    int
+}
+
 // Variables
 var DBValues Database
 
 // Functions
+
+func planeHandler(w http.ResponseWriter, r *http.Request) {
+
+	p := PlaneMarker{Lat: 55.508742, Long: -0.120850, Icao24: "IK2314", Callsign: "DEC342", DepartureAirport: "ENBR", DepartureTime: 12}
+	t, _ := template.ParseFiles("index.html")
+	t.Execute(w, p)
+}
 
 func main() {
 
@@ -76,5 +94,6 @@ func main() {
 	}
 
 	// Handle functions
-
+	http.HandleFunc("/", planeHandler)
+	http.ListenAndServe(":"+port, nil)
 }
