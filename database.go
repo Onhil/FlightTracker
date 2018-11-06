@@ -17,7 +17,7 @@ func (db *Database) Init() {
 }
 
 // Add adds the state s to the database
-func (db *Database) Add(s state) {
+func (db *Database) Add(s State) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
