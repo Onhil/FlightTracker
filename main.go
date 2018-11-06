@@ -20,6 +20,13 @@ type state struct {
 	PositionSource int     //Origin of this state’s position: 0 = ADS-B, 1 = ASTERIX, 2 = MLAT
 }
 
+// ParaglidingDB holds database basic data
+type DBValues struct {
+	DatabaseURL         string
+	DatabaseName        string
+	CollectionName string
+}
+
 type flights struct {
 	Icao24              string `json:"icao24"`              // Unique ICAO 24-bit address of the transponder in hex string representation. All letters are lower case.
 	FirstSeen           int    `json:"firstSeen"`           // Estimated time of departure for the flight as Unix time (seconds since epoch).
@@ -37,4 +44,10 @@ type flights struct {
 
 func main() {
 
+	// Database
+	Database := DBValues{
+		"mongodb://dataAccess:gettingData123@ds253203.mlab.com:53203/opensky",
+		"States",
+		"opensky",
+	}
 }
