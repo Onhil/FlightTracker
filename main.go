@@ -1,5 +1,10 @@
 package main
 
+
+import (
+	"os"
+)
+
 type state struct {
 	Icao24        string // Unique ICAO 24-bit address of the transponder in hex string representation.
 	Callsign      string // Callsign of the vehicle (8 chars). Can be null if no callsign has been received.
@@ -44,10 +49,19 @@ type flights struct {
 
 func main() {
 
-	// Database
+	// Database values
 	Database := DBValues{
 		"mongodb://dataAccess:gettingData123@ds253203.mlab.com:53203/opensky",
 		"States",
 		"opensky",
 	}
+
+	// Sets the port as what it is assigned to be or 8080 if none is found
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	// Handle functions
+	
 }
