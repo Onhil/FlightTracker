@@ -96,6 +96,7 @@ func (db *Database) GetOriginCountry(keyID string) ([]State, bool) {
 	return State, true
 }
 
+// UpdateState tries to updates a State and returns an error if that is not possible
 func (db *Database) UpdateState(s State) error {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {

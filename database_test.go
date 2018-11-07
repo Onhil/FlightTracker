@@ -78,7 +78,7 @@ func TestAddMany(t *testing.T) {
 
 	if db.Count() != 3 {
 		fmt.Print(db.Count()) // DEBUG
-		fmt.Print("\n") // DEBUG
+		fmt.Print("\n")       // DEBUG
 		t.Error("Database not properly initialized, database count should be 3")
 	}
 
