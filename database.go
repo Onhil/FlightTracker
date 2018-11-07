@@ -17,7 +17,7 @@ func (db *Database) Init() {
 }
 
 // Add adds the state s to the database
-func (db *Database) Add(s State) {
+func (db *Database) Add(s State) error {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -26,9 +26,7 @@ func (db *Database) Add(s State) {
 	defer session.Close()
 
 	err = session.DB(db.DatabaseName).C(db.CollectionName).Insert(s)
-	if err != nil {
-		fmt.Printf("error in Insert(): %v", err.Error())
-	}
+	return err
 }
 
 // AddMany adds the list s of states to the database
