@@ -30,7 +30,7 @@ func (db *Database) Add(s State) error {
 }
 
 // AddMany adds the list s of states to the database
-func (db *Database) AddMany(s []State) {
+func (db *Database) AddMany(s []State) error {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -38,7 +38,8 @@ func (db *Database) AddMany(s []State) {
 
 	defer session.Close()
 
-	session.DB(db.DatabaseName).C(db.CollectionName).Bulk().Insert(s)
+	err = session.DB(db.DatabaseName).C(db.CollectionName).Insert(s)
+	return err
 }
 
 // Count Counts the elements in the database
@@ -93,4 +94,16 @@ func (db *Database) GetOriginCountry(keyID string) ([]State, bool) {
 	}
 
 	return State, true
+}
+
+func (db *Database) UpdateState(s State) error {
+	session, err := mgo.Dial(db.HostURL)
+	if err != nil {
+		panic(err)
+	}
+
+	defer session.Close()
+
+	err = session.DB(db.DatabaseName).C(db.CollectionName).Update(bson.M{"icao24": s.Icao24}, s)
+	return err
 }
