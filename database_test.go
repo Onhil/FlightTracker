@@ -76,16 +76,6 @@ func TestAddMany(t *testing.T) {
 
 	db.AddMany(d)
 
-
-	//err := db.Add(testState1)
-	//err = db.Add(testState2)
-	//err = db.Add(testState3)
-
-	//if err != nil {
-	//	t.Error(err)
-	//}
-
-
 	if db.Count() != 3 {
 		fmt.Print(db.Count()) // DEBUG
 		fmt.Print("\n") // DEBUG
@@ -95,9 +85,55 @@ func TestAddMany(t *testing.T) {
 }
 
 func TestGetICAO24(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
 
+	db.Init()
+	if db.Count() != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	err := db.Add(testState)
+	if err != nil {
+		t.Error(err)
+	}
+	if db.Count() != 1 {
+		t.Error("Database not properly initialized, database count should be 1")
+	}
+
+	s, ok := db.GetICAO24("A")
+	if !ok {
+		t.Error("Error in retrival of ICAO24")
+	}
+	if s != testState {
+		t.Error("Incorrect State were returned")
+	}
 }
 
 func TestGetOriginCountry(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
 
+	db.Init()
+	if db.Count() != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	err := db.Add(testState)
+	if err != nil {
+		t.Error(err)
+	}
+	if db.Count() != 1 {
+		t.Error("Database not properly initialized, database count should be 1")
+	}
+
+	s, ok := db.GetOriginCountry("C")
+	if !ok {
+		t.Error("Error in retrival of OriginCountry")
+	}
+	if s[0] != testState {
+		t.Error("Incorrect State were returned")
+	}
 }
