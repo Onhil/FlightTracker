@@ -68,6 +68,7 @@ type PlaneMarker struct {
 	TrueTrack        float64
 }
 
+// Markers holds markers values
 type Markers struct {
 	Title  string
 	Planes map[int]PlaneMarker
@@ -78,7 +79,8 @@ var DBValues Database
 
 // Functions
 
-func planeHandler(w http.ResponseWriter, r *http.Request) {
+// PlaneHandler is the function which handles planes and displays a google map, it is currently in an early stage of development.
+func PlaneHandler(w http.ResponseWriter, r *http.Request) {
 
 	pllanes := make(map[int]PlaneMarker)
 
@@ -108,6 +110,6 @@ func main() {
 	}
 
 	// Handle functions
-	http.HandleFunc("/", planeHandler)
+	http.HandleFunc("/", PlaneHandler)
 	http.ListenAndServe(":"+port, nil)
 }
