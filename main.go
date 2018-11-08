@@ -4,6 +4,10 @@ import (
 	"html/template"
 	"net/http"
 	"os"
+
+	"github.com/go-chi/render"
+
+	"github.com/go-chi/chi"
 )
 
 // Structs
@@ -79,13 +83,30 @@ func planeHandler(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, p)
 }
 
+func originCountryHandler(w http.ResponseWriter, r *http.Request) {
+	country := chi.URLParam(r, "country")
+	if data, ok := DBValues.GetOriginCountry(country); !ok {
+		http.Error(w, "Country not in database", http.StatusBadRequest)
+	} else {
+		render.JSON(w, r, data)
+	}
+}
+
+func departureHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func arrivalHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
 func main() {
 
 	// Database values
 	DBValues = Database{
-		"mongodb://dataAccess:gettingData123@ds253203.mlab.com:53203/opensky",
-		"States",
-		"opensky",
+		HostURL:        "mongodb://dataAccess:gettingData123@ds253203.mlab.com:53203/opensky",
+		CollectionName: "States",
+		DatabaseName:   "opensky",
 	}
 
 	// Sets the port as what it is assigned to be or 8080 if none is found
@@ -94,7 +115,22 @@ func main() {
 		port = "8080"
 	}
 
+	router := chi.NewRouter()
+	router.Route("/flight-tracker", func(r chi.Router) {
+		//r.Get("", )
+		r.Route("/country", func(r chi.Router) {
+			r.Get("/{country:[A-Za-z_]+}", originCountryHandler)
+		})
+		r.Route("/airport", func(r chi.Router) {
+			r.Route("/departing", func(r chi.Router) {
+				r.Get("/{departing:[A-Z]+}", departureHandler)
+			})
+			r.Route("/arriving", func(r chi.Router) {
+				r.Get("/{arriving:[A-Z]+}", arrivalHandler)
+			})
+		})
+	})
 	// Handle functions
 	http.HandleFunc("/", planeHandler)
-	http.ListenAndServe(":"+port, nil)
+	http.ListenAndServe(":"+port, router)
 }

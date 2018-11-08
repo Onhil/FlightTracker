@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
 )
@@ -88,7 +89,7 @@ func (db *Database) GetOriginCountry(keyID string) ([]State, bool) {
 	defer session.Close()
 
 	State := []State{}
-	err = session.DB(db.DatabaseName).C(db.CollectionName).Find(bson.M{"origincountry": keyID}).All(&State)
+	err = session.DB(db.DatabaseName).C(db.CollectionName).Find(bson.M{"origincountry": bson.M{"$in": keyID}}).All(&State)
 	if err != nil {
 		return State, false
 	}
