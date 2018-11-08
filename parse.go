@@ -5,8 +5,8 @@ import (
 	"fmt"
 )
 
+// ## EXAMPLE USES
 /*
-example use:
 test := []byte(`{
 		"time": 1541448600,
 		"states":
@@ -29,10 +29,46 @@ test := []byte(`{
 				false,
 				0
 			]]}`)
+
+session, err := mgo.Dial(DBValues.HostURL)
+	if err != nil {
+		panic(err)
+	}
+
+	defer session.Close()
+	resp, _ := http.Get("https://opensky-network.org/api/states/all")
+
+	body, _ := ioutil.ReadAll(resp.Body)
 	var state States
-	if err := json.Unmarshal(test, &state); err != nil {
+	if err := json.Unmarshal(body, &state); err != nil {
 		fmt.Println("error")
 	}
+	fmt.println(state.states[0])
+*/
+
+/*
+session, err := mgo.Dial(DBValues.HostURL)
+	if err != nil {
+		panic(err)
+	}
+
+	defer session.Close()
+	resp, _ := http.Get("https://opensky-network.org/api/states/all")
+
+	body, _ := ioutil.ReadAll(resp.Body)
+	var state States
+	if err := json.Unmarshal(body, &state); err != nil {
+		fmt.Println("error")
+	}
+	session.DB(DBValues.DatabaseName).C(DBValues.CollectionName).RemoveAll(nil)
+	var sarray []interface{}
+	for i := range state.States {
+		sarray = append(sarray, state.States[i])
+	}
+	var s []State
+	session.DB(DBValues.DatabaseName).C(DBValues.CollectionName).Insert(sarray...)
+	session.DB(DBValues.DatabaseName).C(DBValues.CollectionName).Find(nil).All(&s)
+	fmt.Println(s)
 */
 
 // UnmarshalJSON states from GET /states/all from OpenSky
@@ -105,46 +141,3 @@ func (s *State) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
-
-/*
-session, err := mgo.Dial(DBValues.HostURL)
-	if err != nil {
-		panic(err)
-	}
-
-	defer session.Close()
-	test := []byte(`{
-		"time": 1541448600,
-		"states":
-			[[
-				"ab1644",
-				"UAL1254 ",
-				"United States",
-				1541448598,
-				1541448599,
-				-84.8207,
-				38.5694,
-				11262.36,
-				false,
-				274.2,
-				36.76,
-				0,
-				null,
-				11513.82,
-				"5226",
-				false,
-				0
-			]]}`)
-	var state States
-	if err := json.Unmarshal(test, &state); err != nil {
-		fmt.Println("error")
-	}
-	session.DB(DBValues.DatabaseName).C(DBValues.CollectionName).RemoveAll(nil)
-	var sarray []interface{}
-	sarray = append(sarray, state.States[0])
-	sarray = append(sarray, state.States[0])
-	var s []State
-	session.DB(DBValues.DatabaseName).C(DBValues.CollectionName).Insert(sarray...)
-	session.DB(DBValues.DatabaseName).C(DBValues.CollectionName).Find(nil).All(&s)
-	//fmt.Println(s[1])
-*/
