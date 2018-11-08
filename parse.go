@@ -8,6 +8,7 @@ import (
 // ## EXAMPLE USES
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 test := []byte(`{
 		"time": 1541448600,
 		"states":
@@ -31,6 +32,8 @@ test := []byte(`{
 				0
 			]]}`)
 =======
+=======
+>>>>>>> 1c79a3dada3ae74b202db30b7337c318eae8d482
 ###  EXAMPLE USE:
 
 session, err := mgo.Dial(DBValues.HostURL)
@@ -42,11 +45,15 @@ session, err := mgo.Dial(DBValues.HostURL)
 	resp, _ := http.Get("https://opensky-network.org/api/states/all")
 
 	body, _ := ioutil.ReadAll(resp.Body)
+<<<<<<< HEAD
+>>>>>>> 1c79a3dada3ae74b202db30b7337c318eae8d482
+=======
 >>>>>>> 1c79a3dada3ae74b202db30b7337c318eae8d482
 	var state States
 	if err := json.Unmarshal(body, &state); err != nil {
 		fmt.Println("error")
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	fmt.println(state.states[0])
 */
@@ -65,6 +72,8 @@ session, err := mgo.Dial(DBValues.HostURL)
 	if err := json.Unmarshal(body, &state); err != nil {
 		fmt.Println("error")
 	}
+=======
+>>>>>>> 1c79a3dada3ae74b202db30b7337c318eae8d482
 =======
 >>>>>>> 1c79a3dada3ae74b202db30b7337c318eae8d482
 	session.DB(DBValues.DatabaseName).C(DBValues.CollectionName).RemoveAll(nil)
