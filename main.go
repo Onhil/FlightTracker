@@ -65,6 +65,12 @@ type PlaneMarker struct {
 	Callsign         string
 	DepartureAirport string
 	DepartureTime    int
+	TrueTrack        float64
+}
+
+type Markers struct {
+	Title  string
+	Planes map[int]PlaneMarker
 }
 
 // DBValues is a database element which is accessible everywhere, not sure if this is needed to be honest
@@ -74,7 +80,14 @@ var DBValues Database
 
 func planeHandler(w http.ResponseWriter, r *http.Request) {
 
-	p := PlaneMarker{Lat: 55.508742, Long: -0.120850, Icao24: "IK2314", Callsign: "DEC342", DepartureAirport: "ENBR", DepartureTime: 12}
+	pllanes := make(map[int]PlaneMarker)
+
+	pllanes[0] = PlaneMarker{Lat: 55.508742, Long: -0.120850, Icao24: "IK2314", Callsign: "DEC342", DepartureAirport: "ENBR", DepartureTime: 12, TrueTrack: 0}
+	pllanes[1] = PlaneMarker{Lat: 58.508742, Long: -2.120850, Icao24: "rsg34", Callsign: "234fsd", DepartureAirport: "ENBFL", DepartureTime: 12, TrueTrack: 67}
+	pllanes[2] = PlaneMarker{Lat: 67.508742, Long: -8.120850, Icao24: "Ywer3", Callsign: "324sdf", DepartureAirport: "ENGR", DepartureTime: 12, TrueTrack: 90}
+
+	p := Markers{Title: "Plz Work", Planes: pllanes}
+
 	t, _ := template.ParseFiles("index.html")
 	t.Execute(w, p)
 }
