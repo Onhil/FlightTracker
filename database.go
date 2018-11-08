@@ -39,7 +39,13 @@ func (db *Database) AddMany(s []State) error {
 
 	defer session.Close()
 
-	err = session.DB(db.DatabaseName).C(db.CollectionName).Insert(s)
+	for _, t := range s {
+		err = session.DB(db.DatabaseName).C(db.CollectionName).Insert(t)
+		if err != nil {
+			return err
+		}
+	}
+
 	return err
 }
 

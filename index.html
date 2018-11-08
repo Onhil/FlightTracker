@@ -2,7 +2,7 @@
 <html>
 <body>
 
-<h1>{{.Long}}</h1>
+<h1>{{.Title}}</h1>
 
 <div id="googleMap" style="width:100%;height:800px;"></div>
 
@@ -14,25 +14,34 @@ var mapProp= {
 };
 var map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
 
-var test = {lat: {{.Lat}}, lng: {{.Long}}};
-var marker = new google.maps.Marker({position: test, map: map});
+var infowindow = new google.maps.InfoWindow();
 
-var callsign = {{.Callsign}} 
-var icao24 = {{.Icao24}}
-var airport = {{.DepartureAirport}}
-var time = {{.DepartureTime}}
+{{range $key, $value := .Planes}}
+
+var test = {lat: {{$value.Lat}}, lng: {{$value.Long}}};
+var marker = new google.maps.Marker({position: test, icon: {
+      path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
+      scale: 5,
+      rotation: {{$value.TrueTrack}}
+    }, map: map});
+
+
+var callsign = {{$value.Callsign}} 
+var icao24 = {{$value.Icao24}}
+var airport = {{$value.DepartureAirport}}
+var time = {{$value.DepartureTime}}
 
 var content = icao24 + '<br>' + callsign + '<br>'+ airport + '<br>'+ time
 
-var infowindow = new google.maps.InfoWindow({
-  content: content
-  });
-
-google.maps.event.addListener(marker, 'click', function() {
+google.maps.event.addListener(marker, 'click', (function(marker, content, infowindow) {
+  return function(){
+  infowindow.setContent(content);
   infowindow.open(map,marker);
-  });
+  }
+  })(marker, content, infowindow));
 
-marker.setMap(map);
+{{end}}
+
 }
 </script>
 
