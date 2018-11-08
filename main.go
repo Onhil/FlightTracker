@@ -134,7 +134,7 @@ func main() {
 	router.Route("/flight-tracker", func(r chi.Router) {
 		//r.Get("", )
 		r.Route("/country", func(r chi.Router) {
-			r.Get("/{country:[A-Za-z_]+}", originCountryHandler)
+			r.Get("/{country:[A-Za-z_ ]+}", originCountryHandler)
 		})
 		r.Route("/airport", func(r chi.Router) {
 			r.Route("/departing", func(r chi.Router) {
