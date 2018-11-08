@@ -7,6 +7,7 @@ import (
 
 // ## EXAMPLE USES
 /*
+>>>>>>> 1f47284209172f339c14ba6b24055a917c8647fc
 test := []byte(`{
 		"time": 1541448600,
 		"states":
@@ -29,6 +30,7 @@ test := []byte(`{
 				false,
 				0
 			]]}`)
+###  EXAMPLE USE:
 
 session, err := mgo.Dial(DBValues.HostURL)
 	if err != nil {
