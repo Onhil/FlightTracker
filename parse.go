@@ -7,8 +7,7 @@ import (
 
 // ## EXAMPLE USES
 /*
->>>>>>> 1f47284209172f339c14ba6b24055a917c8647fc
-test := []byte(`{
+	test := []byte(`{
 		"time": 1541448600,
 		"states":
 			[[
@@ -30,26 +29,26 @@ test := []byte(`{
 				false,
 				0
 			]]}`)
-###  EXAMPLE USE:
 
-session, err := mgo.Dial(DBValues.HostURL)
+	session, err := mgo.Dial(DBValues.HostURL)
 	if err != nil {
 		panic(err)
 	}
 
 	defer session.Close()
-	resp, _ := http.Get("https://opensky-network.org/api/states/all")
-
-	body, _ := ioutil.ReadAll(resp.Body)
 	var state States
-	if err := json.Unmarshal(body, &state); err != nil {
+	if err := json.Unmarshal(test, &state); err != nil {
 		fmt.Println("error")
 	}
-	fmt.println(state.states[0])
+
+	session.DB(DBValues.DatabaseName).C(DBValues.CollectionName).RemoveAll(nil)
+
+	session.DB(DBValues.DatabaseName).C(DBValues.CollectionName).Insert(state.States[0])
+	fmt.println(state.States[0])
 */
 
 /*
-session, err := mgo.Dial(DBValues.HostURL)
+	session, err := mgo.Dial(DBValues.HostURL)
 	if err != nil {
 		panic(err)
 	}
