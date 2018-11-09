@@ -44,6 +44,7 @@ type Database struct {
 	HostURL        string
 	DatabaseName   string
 	CollectionName string
+	CollectionAirport string
 }
 
 type flights struct {
@@ -126,6 +127,7 @@ func main() {
 		HostURL:        "mongodb://dataAccess:gettingData123@ds253203.mlab.com:53203/opensky",
 		CollectionName: "States",
 		DatabaseName:   "opensky",
+		CollectionAirport: "Airports",
 	}
 
 	// Sets the port as what it is assigned to be or 8080 if none is found
