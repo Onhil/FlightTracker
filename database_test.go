@@ -9,7 +9,7 @@ import (
 
 func setupDB(t *testing.T) *Database {
 	db := Database{
-		"mongodb://user1:pas123@ds155823.mlab.com:55823/testing",
+		"mongodb://localhost",
 		"testing",
 		"testdata",
 	}
