@@ -76,8 +76,8 @@ func TestAddDuplicates(t *testing.T) {
 	}
 
 	err = db.Add(testState)
-	if err != nil {
-		t.Error(err)
+	if err == nil {
+		t.Error("An error should have been returned when trying to insert a duplicate element!")
 	}
 	if db.Count() != 1 {
 		t.Error("Duplicate got added, database count should be 1")
