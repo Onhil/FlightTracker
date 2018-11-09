@@ -30,19 +30,6 @@ func (db *Database) Init() {
 	}
 }
 
-// Add adds the state s to the database
-func (db *Database) Add(s State) error {
-	session, err := mgo.Dial(db.HostURL)
-	if err != nil {
-		panic(err)
-	}
-
-	defer session.Close()
-
-	err = session.DB(db.DatabaseName).C(db.CollectionName).Insert(s)
-	return err
-}
-
 // AddAirport adds all the airport data to database
 func (db *Database) AddAirport(a []Airport) error {
 	session, err := mgo.Dial(db.HostURL)
@@ -53,25 +40,6 @@ func (db *Database) AddAirport(a []Airport) error {
 	defer session.Close()
 
 	for _, t := range a {
-		err = session.DB(db.DatabaseName).C(db.CollectionName).Insert(t)
-		if err != nil {
-			return err
-		}
-	}
-
-	return err
-}
-
-// AddMany adds the list s of states to the database
-func (db *Database) AddMany(s []State) error {
-	session, err := mgo.Dial(db.HostURL)
-	if err != nil {
-		panic(err)
-	}
-
-	defer session.Close()
-
-	for _, t := range s {
 		err = session.DB(db.DatabaseName).C(db.CollectionName).Insert(t)
 		if err != nil {
 			return err
@@ -172,7 +140,7 @@ func (db *Database) GetAirport(keyID string) (Airport, bool) {
 }
 
 // UpdateState tries to updates a State and returns an error if that is not possible
-func (db *Database) UpdateState(s State) error {
+func (db *Database) UpdateState(sarray []interface{}) error {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -180,6 +148,9 @@ func (db *Database) UpdateState(s State) error {
 
 	defer session.Close()
 
-	err = session.DB(db.DatabaseName).C(db.CollectionName).Update(bson.M{"icao24": s.Icao24}, s)
+	session.DB(db.DatabaseName).C(db.CollectionName).RemoveAll(nil)
+
+	err = session.DB(db.DatabaseName).C(db.CollectionName).Insert(sarray...)
+
 	return err
 }
