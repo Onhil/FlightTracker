@@ -102,7 +102,11 @@ func TestAddMany(t *testing.T) {
 	d = append(d, testState2)
 	d = append(d, testState3)
 
-	db.AddMany(d)
+	err := db.AddMany(d)
+
+	if err != nil {
+		t.Error("There should not have been any errors!")
+	}
 
 	if db.Count() != 3 {
 		fmt.Print(db.Count()) // DEBUG
@@ -138,7 +142,11 @@ func TestAddManyDuplicates(t *testing.T) {
 		t.Error("Database not properly initialized, database count should be 3")
 	}
 
-	db.AddMany(d)
+	err := db.AddMany(d)
+
+	if err == nil {
+		t.Error("An error should have been returned when trying to insert duplicate elements!")
+	}
 
 	if db.Count() != 3 {
 		fmt.Print(db.Count()) // DEBUG
