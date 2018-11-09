@@ -118,6 +118,7 @@ func ArrivalHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// main
 func main() {
 
 	// Database values
