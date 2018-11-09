@@ -113,8 +113,16 @@ func PlaneHandler(w http.ResponseWriter, r *http.Request) {
 
 	p := Markers{Title: "Plz Work", Planes: pllanes}
 
-	t, _ := template.ParseFiles("index.html")
-	t.Execute(w, p)
+	t, err := template.ParseFiles("index.html")
+	if err != nil {
+		// TODO better error
+		http.Error(w, "Error in parsing index", http.StatusBadRequest)
+	}
+	err = t.Execute(w, p)
+	if err != nil {
+		// TODO better error
+		http.Error(w, "Error in executing", http.StatusBadRequest)
+	}
 }
 
 // OriginCountryHandler handles origin country
@@ -171,5 +179,5 @@ func main() {
 	})
 	// Handle functions
 	http.HandleFunc("/", PlaneHandler)
-	http.ListenAndServe(":"+port, router)
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }

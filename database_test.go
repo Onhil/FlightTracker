@@ -21,17 +21,17 @@ func setupDB(t *testing.T) *Database {
 	if err != nil {
 		t.Error(err)
 	}
+	defer session.Close()
 
 	return &db
 }
 
 func tearDownDB(t *testing.T, db *Database) {
 	session, err := mgo.Dial(db.HostURL)
-	defer session.Close()
-
 	if err != nil {
 		t.Error(err)
 	}
+	defer session.Close()
 
 	err = session.DB(db.DatabaseName).DropDatabase()
 	if err != nil {
