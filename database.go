@@ -17,11 +17,11 @@ func (db *Database) Init() {
 	defer session.Close()
 
 	index := mgo.Index{
-		Key: []string{"icao24"},
-		Unique: true,
-		DropDups: true,
+		Key:        []string{"icao24"},
+		Unique:     true,
+		DropDups:   true,
 		Background: true,
-		Sparse: true,
+		Sparse:     true,
 	}
 
 	err = session.DB(db.DatabaseName).C(db.CollectionName).EnsureIndex(index)

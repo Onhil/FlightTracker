@@ -98,7 +98,8 @@ func PlaneHandler(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, p)
 }
 
-func originCountryHandler(w http.ResponseWriter, r *http.Request) {
+// OriginCountryHandler handles origin country
+func OriginCountryHandler(w http.ResponseWriter, r *http.Request) {
 	country := chi.URLParam(r, "country")
 	if data, ok := DBValues.GetOriginCountry(country); !ok {
 		http.Error(w, "Country not in database", http.StatusBadRequest)
@@ -107,11 +108,13 @@ func originCountryHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func departureHandler(w http.ResponseWriter, r *http.Request) {
+// DepartureHandler handles departures
+func DepartureHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func arrivalHandler(w http.ResponseWriter, r *http.Request) {
+// ArrivalHandler handles arrivals
+func ArrivalHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
@@ -134,14 +137,14 @@ func main() {
 	router.Route("/flight-tracker", func(r chi.Router) {
 		//r.Get("", )
 		r.Route("/country", func(r chi.Router) {
-			r.Get("/{country:[A-Za-z_ ]+}", originCountryHandler)
+			r.Get("/{country:[A-Za-z_ ]+}", OriginCountryHandler)
 		})
 		r.Route("/airport", func(r chi.Router) {
 			r.Route("/departing", func(r chi.Router) {
-				r.Get("/{departing:[A-Z]+}", departureHandler)
+				r.Get("/{departing:[A-Z]+}", DepartureHandler)
 			})
 			r.Route("/arriving", func(r chi.Router) {
-				r.Get("/{arriving:[A-Z]+}", arrivalHandler)
+				r.Get("/{arriving:[A-Z]+}", ArrivalHandler)
 			})
 		})
 	})

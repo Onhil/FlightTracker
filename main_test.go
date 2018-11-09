@@ -18,3 +18,19 @@ func TestPlaneHandler(t *testing.T) {
 		t.Errorf("Expected StatusCode %d, received %d", http.StatusOK, resp.StatusCode)
 	}
 }
+
+func TestOriginCountryHandler(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(PlaneHandler))
+	defer ts.Close()
+
+	// resp, err := http.Get(ts.URL + "/country/{country:[A-Za-z_ ]+}")
+
+}
+
+func TestDepartureHandler(t *testing.T) {
+
+}
+
+func TestArrivalHandler(t *testing.T) {
+
+}
