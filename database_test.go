@@ -157,6 +157,37 @@ func TestAddManyDuplicates(t *testing.T) {
 
 }
 
+func TestAddAirport(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
+
+	db.Init()
+	if db.CountAirport() != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	testAirport1 := Airport{1, "Gjovik Airport", "Gjovik", "Norway", "GJO", "GJOV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
+	testAirport2 := Airport{2, "Bardufoss Airport", "Bardufoss", "Norway", "BAR", "BARD", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
+	testAirport3 := Airport{3, "Molvik Airport", "Molvik", "Norway", "MOL", "MOLV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
+
+	d := []Airport{}
+	d = append(d, testAirport1)
+	d = append(d, testAirport2)
+	d = append(d, testAirport3)
+
+	err := db.AddAirport(d)
+
+	if err != nil {
+		t.Error("There should not have been any errors!")
+	}
+
+	if db.CountAirport() != 3 {
+		fmt.Print(db.CountAirport()) // DEBUG
+		fmt.Print("\n")              // DEBUG
+		t.Error("Database not properly initialized, database count should be 3")
+	}
+}
+
 func TestGetICAO24(t *testing.T) {
 	db := setupDB(t)
 	defer tearDownDB(t, db)
@@ -208,6 +239,40 @@ func TestGetOriginCountry(t *testing.T) {
 	}
 	if s[0] != testState {
 		t.Error("Incorrect State were returned")
+	}
+}
+
+func TestGetAirport(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
+
+	db.Init()
+	if db.CountAirport() != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	testAirport1 := Airport{1, "Gjovik Airport", "Gjovik", "Norway", "GJO", "GJOV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
+	testAirport2 := Airport{2, "Bardufoss Airport", "Bardufoss", "Norway", "BAR", "BARD", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
+	testAirport3 := Airport{3, "Molvik Airport", "Molvik", "Norway", "MOL", "MOLV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
+
+	d := []Airport{}
+	d = append(d, testAirport1)
+	d = append(d, testAirport2)
+	d = append(d, testAirport3)
+
+	err := db.AddAirport(d)
+
+	if err != nil {
+		t.Error("There should not have been any errors!")
+	}
+
+	a, ok := db.GetAirport("BARD")
+	if !ok {
+		t.Error("Error in retrival of OriginCountry")
+	}
+
+	if a != testAirport2 {
+		t.Error("Incorrect airport was returned")
 	}
 }
 
