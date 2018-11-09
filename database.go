@@ -30,8 +30,8 @@ func (db *Database) Init() {
 	}
 }
 
-// AddAirport adds all the airport data to database
-func (db *Database) AddAirport(a []Airport) error {
+// Add removes and adds documents to passes collection name
+func (db *Database) Add(documents []interface{}, collN string) error {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -39,18 +39,18 @@ func (db *Database) AddAirport(a []Airport) error {
 
 	defer session.Close()
 
-	for _, t := range a {
-		err = session.DB(db.DatabaseName).C(db.CollectionName).Insert(t)
-		if err != nil {
-			return err
-		}
+	_, err = session.DB(db.DatabaseName).C(collN).RemoveAll(nil)
+	if err != nil {
+		return err
 	}
+
+	err = session.DB(db.DatabaseName).C(collN).Insert(documents...)
 
 	return err
 }
 
-// Count Counts the elements in the database
-func (db *Database) Count() int {
+// Count Counts the documents in a collection
+func (db *Database) Count(collN string) int {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -58,25 +58,7 @@ func (db *Database) Count() int {
 
 	defer session.Close()
 
-	count, err := session.DB(db.DatabaseName).C(db.CollectionName).Count()
-	if err != nil {
-		fmt.Printf("error in Count(): %v", err.Error())
-		return -1
-	}
-
-	return count
-}
-
-//CountAirport counts the elements in airport database
-func (db *Database) CountAirport() int {
-	session, err := mgo.Dial(db.HostURL)
-	if err != nil {
-		panic(err)
-	}
-
-	defer session.Close()
-
-	count, err := session.DB(db.DatabaseName).C(db.CollectionAirport).Count()
+	count, err := session.DB(db.DatabaseName).C(collN).Count()
 	if err != nil {
 		fmt.Printf("error in Count(): %v", err.Error())
 		return -1
@@ -94,13 +76,13 @@ func (db *Database) GetICAO24(keyID string) (State, bool) {
 
 	defer session.Close()
 
-	State := State{}
-	err = session.DB(db.DatabaseName).C(db.CollectionName).Find(bson.M{"icao24": keyID}).One(&State)
+	state := State{}
+	err = session.DB(db.DatabaseName).C(db.CollectionName).Find(bson.M{"icao24": keyID}).One(&state)
 	if err != nil {
-		return State, false
+		return state, false
 	}
 
-	return State, true
+	return state, true
 }
 
 // GetOriginCountry returns the origin country if it is in the database and an empty object and false if not
@@ -112,13 +94,13 @@ func (db *Database) GetOriginCountry(keyID string) ([]State, bool) {
 
 	defer session.Close()
 
-	State := []State{}
-	err = session.DB(db.DatabaseName).C(db.CollectionName).Find(bson.M{"origincountry": keyID}).All(&State)
+	state := []State{}
+	err = session.DB(db.DatabaseName).C(db.CollectionName).Find(bson.M{"origincountry": keyID}).All(&state)
 	if err != nil {
-		return State, false
+		return state, false
 	}
 
-	return State, true
+	return state, true
 }
 
 // GetAirport returns airport after ICAO code and true if in database, and an empty object and false if not
@@ -130,27 +112,11 @@ func (db *Database) GetAirport(keyID string) (Airport, bool) {
 
 	defer session.Close()
 
-	Port := Airport{}
-	err = session.DB(db.DatabaseName).C(db.CollectionAirport).Find(bson.M{"icao": keyID}).One(&Port)
+	port := Airport{}
+	err = session.DB(db.DatabaseName).C(db.CollectionAirport).Find(bson.M{"icao": keyID}).One(&port)
 	if err != nil {
-		return Port, false
+		return port, false
 	}
 
-	return Port, true
-}
-
-// UpdateState tries to updates a State and returns an error if that is not possible
-func (db *Database) UpdateState(sarray []interface{}) error {
-	session, err := mgo.Dial(db.HostURL)
-	if err != nil {
-		panic(err)
-	}
-
-	defer session.Close()
-
-	session.DB(db.DatabaseName).C(db.CollectionName).RemoveAll(nil)
-
-	err = session.DB(db.DatabaseName).C(db.CollectionName).Insert(sarray...)
-
-	return err
+	return port, true
 }
