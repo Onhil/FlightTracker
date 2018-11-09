@@ -12,6 +12,7 @@ func setupDB(t *testing.T) *Database {
 		"mongodb://localhost",
 		"testing",
 		"testdata",
+		"testAirport",
 	}
 
 	session, err := mgo.Dial(db.HostURL)
