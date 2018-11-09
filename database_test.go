@@ -9,15 +9,13 @@ import (
 
 func setupDB(t *testing.T) *Database {
 	db := Database{
-		"mongodb://localhost",
-		"testing",
-		"testdata",
-		"testAirport",
+		HostURL:           "mongodb://localhost",
+		DatabaseName:      "testing",
+		CollectionName:    "testdata",
+		CollectionAirport: "testAirport",
 	}
 
 	session, err := mgo.Dial(db.HostURL)
-	defer session.Close()
-
 	if err != nil {
 		t.Error(err)
 	}
@@ -39,7 +37,9 @@ func tearDownDB(t *testing.T, db *Database) {
 	}
 }
 
-func TestAddDuplicates(t *testing.T) {
+/// Commented out likely not needed as UpdateState is changed to removing all documents and adding new ones therefore no duplicates
+
+/* func TestAddDuplicates(t *testing.T) {
 	db := setupDB(t)
 	defer tearDownDB(t, db)
 
@@ -64,9 +64,9 @@ func TestAddDuplicates(t *testing.T) {
 	if db.Count() != 1 {
 		t.Error("Duplicate got added, database count should be 1")
 	}
-}
+} */
 
-func TestAddManyDuplicates(t *testing.T) {
+/* func TestAddManyDuplicates(t *testing.T) {
 	db := setupDB(t)
 	defer tearDownDB(t, db)
 
@@ -104,7 +104,7 @@ func TestAddManyDuplicates(t *testing.T) {
 		t.Error("Duplicates added, database count should be 3")
 	}
 
-}
+} */
 
 func TestAddAirport(t *testing.T) {
 	db := setupDB(t)
@@ -231,7 +231,9 @@ func TestGetAirport(t *testing.T) {
 	}
 }
 
-func TestUpdateState(t *testing.T) {
+/// Commented out likely not needed as UpdateState is changed to removing all documents and adding new ones
+
+/* func TestUpdateState(t *testing.T) {
 	db := setupDB(t)
 	defer tearDownDB(t, db)
 
@@ -263,4 +265,4 @@ func TestUpdateState(t *testing.T) {
 		t.Error("State not updated")
 	}
 
-}
+} */
