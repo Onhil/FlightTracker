@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
-	"github.com/globalsign/mgo"
 	"testing"
+
+	"github.com/globalsign/mgo"
 )
 
 func setupDB(t *testing.T) *Database {
 	db := Database{
-		"mongodb://localhost",
-		"test",
+		"mongodb://user1:pas123@ds155823.mlab.com:55823/testing",
+		"testing",
 		"testdata",
 	}
 
