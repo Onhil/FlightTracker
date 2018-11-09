@@ -2,6 +2,7 @@ package main
 
 import (
 	"html/template"
+	"log"
 	"net/http"
 	"os"
 
@@ -51,7 +52,7 @@ type Airport struct {
 	Longitude          float64 `json:"Longitude"`             //Decimal degrees, usally to six significant digits. Negative is West, positive is East.
 	Altitude           float64 `json:"Altitude"`              //In feet.
 	Timezone           float64 `json:"Timezone"`              //Hours offset from UTC. Fractional hours are expressed as decimals, eg. India is 5.5.
-	DST                string  `json:"DST"`                    //Daylight savings time. One of E (Europe), A (US/Canada), S (Sout America), O (Australia), Z (New Zealand), N (None) or U (Unknown)
+	DST                string  `json:"DST"`                   //Daylight savings time. One of E (Europe), A (US/Canada), S (Sout America), O (Australia), Z (New Zealand), N (None) or U (Unknown)
 	TzDatabaseTimeZone string  `json:"Tz_database_time_zone"` //Timezone in "tz" (Olson) format, eg. "America/Los_Angeles".
 	Type               string  `json:"Type"`                  //Type of airport. only type=airport included.
 	Source             string  `json:"Source"`                //Source of this data. "OurAirports" is the only source
