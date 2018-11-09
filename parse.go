@@ -80,60 +80,42 @@ func (s *State) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	s.Icao24 = v[0].(string)
-	if v[1] == nil {
-		s.Callsign = ""
-	} else {
+	if v[1] != nil {
 		s.Callsign = v[1].(string) // Null
 	}
 	s.OriginCountry = v[2].(string)
 	///	s.TimePosition = v[3].(int)
 	///	s.LastContact = v[4].(int)
-	if v[5] == nil {
-		s.Longitude = 0
-	} else {
+	if v[5] != nil {
 		s.Longitude = v[5].(float64) // Null
 	}
 
-	if v[6] == nil {
-		s.Latitude = 0
-	} else {
+	if v[6] != nil {
 		s.Latitude = v[6].(float64) // Null
 	}
 
-	if v[7] == nil {
-		s.BaroAltitude = 0
-	} else {
+	if v[7] != nil {
 		s.BaroAltitude = v[7].(float64) // Null
 	}
 	s.OnGround = v[8].(bool)
-	if v[9] == nil {
-		s.Velocity = 0
-	} else {
+	if v[9] != nil {
 		s.Velocity = v[9].(float64) // Null
 	}
 
-	if v[10] == nil {
-		s.TrueTrack = 0
-	} else {
+	if v[10] != nil {
 		s.TrueTrack = v[10].(float64) // Null
 	}
 
-	if v[11] == nil {
-		s.VerticalRate = 0
-	} else {
+	if v[11] != nil {
 		s.VerticalRate = v[11].(float64) // Null
 	}
 
 	///	s.Sensors = v[12].([]int)
-	if v[13] == nil {
-		s.GeoAltitude = 0
-	} else {
+	if v[13] != nil {
 		s.GeoAltitude = v[13].(float64) // Null
 	}
 
-	if v[14] == nil {
-		s.Squawk = ""
-	} else {
+	if v[14] != nil {
 		s.Squawk = v[14].(string) // Null
 	}
 
