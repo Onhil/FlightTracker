@@ -1,5 +1,6 @@
 package main
 
-func run() {
+// Run _
+func Run() {
 
 }
