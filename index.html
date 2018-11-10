@@ -18,7 +18,7 @@ var infowindow = new google.maps.InfoWindow();
 
 {{range $key, $value := .Planes}}
 
-var test = {lat: {{$value.Lat}}, lng: {{$value.Long}}};
+var test = {lat: {{$value.Latitude}}, lng: {{$value.Longitude}}};
 var marker = new google.maps.Marker({position: test, icon: {
       path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
       scale: 5,
@@ -28,10 +28,11 @@ var marker = new google.maps.Marker({position: test, icon: {
 
 var callsign = {{$value.Callsign}} 
 var icao24 = {{$value.Icao24}}
-var airport = {{$value.DepartureAirport}}
-var time = {{$value.DepartureTime}}
+var airport = {{$value.OriginCountry}}
+var baroalt = {{$value.BaroAltitude}}
 
-var content = icao24 + '<br>' + callsign + '<br>'+ airport + '<br>'+ time
+
+var content = icao24 + '<br>' + callsign + '<br>'+ airport
 
 google.maps.event.addListener(marker, 'click', (function(marker, content, infowindow) {
   return function(){

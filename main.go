@@ -95,7 +95,7 @@ type PlaneMarker struct {
 // Markers holds markers values
 type Markers struct {
 	Title  string
-	Planes map[int]PlaneMarker
+	Planes map[int]State
 }
 
 // DBValues is a database element which is accessible everywhere, not sure if this is needed to be honest
@@ -106,13 +106,16 @@ var DBValues Database
 // PlaneHandler is the function which handles planes and displays a google map, it is currently in an early stage of development.
 func PlaneHandler(w http.ResponseWriter, r *http.Request) {
 
-	pllanes := make(map[int]PlaneMarker)
+	var pllanes []State
+	pllanes, _ = DBValues.GetAllFlights()
 
-	pllanes[0] = PlaneMarker{Lat: 55.508742, Long: -0.120850, Icao24: "IK2314", Callsign: "DEC342", DepartureAirport: "ENBR", DepartureTime: 12, TrueTrack: 0}
-	pllanes[1] = PlaneMarker{Lat: 58.508742, Long: -2.120850, Icao24: "rsg34", Callsign: "234fsd", DepartureAirport: "ENBFL", DepartureTime: 12, TrueTrack: 67}
-	pllanes[2] = PlaneMarker{Lat: 67.508742, Long: -8.120850, Icao24: "Ywer3", Callsign: "324sdf", DepartureAirport: "ENGR", DepartureTime: 12, TrueTrack: 90}
+	planes := make(map[int]State)
 
-	p := Markers{Title: "Plz Work", Planes: pllanes}
+	for i := 0; i < len(pllanes); i++ {
+		planes[i] = pllanes[i]
+	}
+
+	p := Markers{Title: "Plz Work", Planes: planes}
 
 	t, err := template.ParseFiles("index.html")
 	if err != nil {
@@ -165,7 +168,7 @@ func main() {
 
 	router := chi.NewRouter()
 	router.Route("/flight-tracker", func(r chi.Router) {
-		//r.Get("", )
+		r.Get("/", PlaneHandler)
 		r.Route("/country", func(r chi.Router) {
 			r.Get("/{country:[A-Za-z_ ]+}", OriginCountryHandler)
 		})
@@ -179,6 +182,5 @@ func main() {
 		})
 	})
 	// Handle functions
-	http.HandleFunc("/", PlaneHandler)
 	log.Fatal(http.ListenAndServe(":"+port, router))
 }

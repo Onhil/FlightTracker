@@ -17,7 +17,6 @@ func Run() {
 			fmt.Println(err)
 		}
 
-		fmt.Println("Enter loop")
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Println(err)
@@ -34,7 +33,7 @@ func Run() {
 		if err != nil {
 			fmt.Println(err)
 		}
-		time.Sleep(30 * time.Second)
+		time.Sleep(15 * time.Minute)
 		fmt.Println("Next update in 15 min")
 	}
 }

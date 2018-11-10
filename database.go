@@ -120,3 +120,19 @@ func (db *Database) GetAirport(keyID string) (Airport, bool) {
 
 	return port, true
 }
+
+func (db *Database) GetAllFlights() ([]State, bool) {
+	session, err := mgo.Dial(db.HostURL)
+	if err != nil {
+		panic(err)
+	}
+
+	defer session.Close()
+
+	var states []State
+
+	err = session.DB(db.DatabaseName).C(db.CollectionName).Find(nil).All(&states)
+
+	return states, true
+
+}
