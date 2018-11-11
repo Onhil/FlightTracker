@@ -31,6 +31,10 @@ func (db *Database) Init() {
 }
 
 // Add removes and adds documents to passes collection name
+// Example:
+// CollectionState
+// CollectionAirport
+// CollectionFlight
 func (db *Database) Add(documents []interface{}, collN string) error {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
@@ -50,6 +54,10 @@ func (db *Database) Add(documents []interface{}, collN string) error {
 }
 
 // Count Counts the documents in a collection
+// Example:
+// CollectionState
+// CollectionAirport
+// CollectionFlight
 func (db *Database) Count(collN string) int {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
