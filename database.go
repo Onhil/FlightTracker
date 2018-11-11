@@ -144,3 +144,19 @@ func (db *Database) GetAllFlights() ([]State, bool) {
 	return states, true
 
 }
+
+func (db *Database) GetFlightFieldData(findData map[string]interface{}) ([]Flight, bool) {
+	session, err := mgo.Dial(db.HostURL)
+	if err != nil {
+		panic(err)
+	}
+
+	defer session.Close()
+
+	var flights []Flight
+
+	err = session.DB(db.DatabaseName).C(db.CollectionFlight).Find(findData).All(&flights)
+
+	return flights, true
+
+}
