@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 )
 
 // ## EXAMPLE USES
@@ -123,4 +124,11 @@ func (s *State) UnmarshalJSON(data []byte) error {
 	/// s.PositionSource = v[16].(int)
 
 	return nil
+}
+
+func timeFlights() string {
+	end := time.Now().Unix()
+	begin := end - 7200
+	url := fmt.Sprintf("https://opensky-network.org/api/flights/all?begin=%d&end=%d", begin, end)
+	return url
 }
