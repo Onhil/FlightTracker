@@ -41,9 +41,9 @@ import (
 		fmt.Println("error")
 	}
 
-	session.DB(DBValues.DatabaseName).C(DBValues.CollectionName).RemoveAll(nil)
+	session.DB(DBValues.DatabaseName).C(DBValues.CollectionState).RemoveAll(nil)
 
-	session.DB(DBValues.DatabaseName).C(DBValues.CollectionName).Insert(state.States[0])
+	session.DB(DBValues.DatabaseName).C(DBValues.CollectionState).Insert(state.States[0])
 	fmt.println(state.States[0])
 */
 
@@ -61,14 +61,14 @@ import (
 	if err := json.Unmarshal(body, &state); err != nil {
 		fmt.Println("error")
 	}
-	session.DB(DBValues.DatabaseName).C(DBValues.CollectionName).RemoveAll(nil)
+	session.DB(DBValues.DatabaseName).C(DBValues.CollectionState).RemoveAll(nil)
 	var sarray []interface{}
 	for i := range state.States {
 		sarray = append(sarray, state.States[i])
 	}
 	var s []State
-	session.DB(DBValues.DatabaseName).C(DBValues.CollectionName).Insert(sarray...)
-	session.DB(DBValues.DatabaseName).C(DBValues.CollectionName).Find(nil).All(&s)
+	session.DB(DBValues.DatabaseName).C(DBValues.CollectionState).Insert(sarray...)
+	session.DB(DBValues.DatabaseName).C(DBValues.CollectionState).Find(nil).All(&s)
 	fmt.Println(s)
 */
 

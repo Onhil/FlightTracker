@@ -11,8 +11,9 @@ func setupDB(t *testing.T) *Database {
 	db := Database{
 		HostURL:           "mongodb://localhost",
 		DatabaseName:      "testing",
-		CollectionName:    "testdata",
+		CollectionState:   "testState",
 		CollectionAirport: "testAirport",
+		CollectionFlight:  "testFlight",
 	}
 
 	session, err := mgo.Dial(db.HostURL)
@@ -142,7 +143,7 @@ func TestGetICAO24(t *testing.T) {
 	defer tearDownDB(t, db)
 
 	db.Init()
-	if db.Count(db.CollectionName) != 0 {
+	if db.Count(db.CollectionState) != 0 {
 		t.Error("Database not properly initialized, database count should be 0")
 	}
 
@@ -150,11 +151,11 @@ func TestGetICAO24(t *testing.T) {
 	var testStateArray []interface{}
 	testStateArray = append(testStateArray, testState)
 
-	err := db.Add(testStateArray, db.CollectionName)
+	err := db.Add(testStateArray, db.CollectionState)
 	if err != nil {
 		t.Error(err)
 	}
-	if db.Count(db.CollectionName) != 1 {
+	if db.Count(db.CollectionState) != 1 {
 		t.Error("Database not properly initialized, database count should be 1")
 	}
 
@@ -172,7 +173,7 @@ func TestGetOriginCountry(t *testing.T) {
 	defer tearDownDB(t, db)
 
 	db.Init()
-	if db.Count(db.CollectionName) != 0 {
+	if db.Count(db.CollectionState) != 0 {
 		t.Error("Database not properly initialized, database count should be 0")
 	}
 
@@ -180,11 +181,11 @@ func TestGetOriginCountry(t *testing.T) {
 	var testStateArray []interface{}
 	testStateArray = append(testStateArray, testState)
 
-	err := db.Add(testStateArray, db.CollectionName)
+	err := db.Add(testStateArray, db.CollectionState)
 	if err != nil {
 		t.Error(err)
 	}
-	if db.Count(db.CollectionName) != 1 {
+	if db.Count(db.CollectionState) != 1 {
 		t.Error("Database not properly initialized, database count should be 1")
 	}
 

@@ -29,7 +29,7 @@ func Run() {
 		for i := range state.States {
 			sarray = append(sarray, state.States[i])
 		}
-		err = DBValues.Add(sarray, DBValues.CollectionName)
+		err = DBValues.Add(sarray, DBValues.CollectionState)
 		if err != nil {
 			fmt.Println(err)
 		}

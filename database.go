@@ -24,7 +24,7 @@ func (db *Database) Init() {
 		Sparse:     true,
 	}
 
-	err = session.DB(db.DatabaseName).C(db.CollectionName).EnsureIndex(index)
+	err = session.DB(db.DatabaseName).C(db.CollectionState).EnsureIndex(index)
 	if err != nil {
 		panic(err)
 	}
@@ -77,7 +77,7 @@ func (db *Database) GetICAO24(keyID string) (State, bool) {
 	defer session.Close()
 
 	state := State{}
-	err = session.DB(db.DatabaseName).C(db.CollectionName).Find(bson.M{"icao24": keyID}).One(&state)
+	err = session.DB(db.DatabaseName).C(db.CollectionState).Find(bson.M{"icao24": keyID}).One(&state)
 	if err != nil {
 		return state, false
 	}
@@ -95,7 +95,7 @@ func (db *Database) GetOriginCountry(keyID string) ([]State, bool) {
 	defer session.Close()
 
 	state := []State{}
-	err = session.DB(db.DatabaseName).C(db.CollectionName).Find(bson.M{"origincountry": keyID}).All(&state)
+	err = session.DB(db.DatabaseName).C(db.CollectionState).Find(bson.M{"origincountry": keyID}).All(&state)
 	if err != nil {
 		return state, false
 	}
@@ -131,7 +131,7 @@ func (db *Database) GetAllFlights() ([]State, bool) {
 
 	var states []State
 
-	err = session.DB(db.DatabaseName).C(db.CollectionName).Find(nil).All(&states)
+	err = session.DB(db.DatabaseName).C(db.CollectionState).Find(nil).All(&states)
 
 	return states, true
 
