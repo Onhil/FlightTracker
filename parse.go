@@ -153,3 +153,56 @@ func mergeStatesAndFlights(s []State, f []Flight) []interface{} {
 	}
 	return documents
 }
+
+// ## EXAMPLE USES OF AIPORT MARSHAL
+/*
+test := []byte(`{
+		[[
+			"23",
+			"Gjovik Airport",
+			"Gjovik",
+			"Norway",
+			"GJO",		//Can be null
+			"GJOV"		//Can be null
+			-84.8207,
+			38.5694,
+			350,
+			1,
+			"E",		//E, A, S, O, Z, N or U
+			"Europe/Oslo",
+			"airport",
+			"Example"
+		]]}`)
+*/
+
+//ParseAirport parses the data for airports
+func (a *Airport) ParseAirport(data []byte) error {
+	var v []interface{}
+	if err := json.Unmarshal(data, &v); err != nil {
+		fmt.Printf("Error whilde decoding %v\n", err)
+		return err
+	}
+	a.ID = v[0].(int)
+	a.Name = v[1].(string)
+	a.City = v[2].(string)
+	a.Country = v[3].(string)
+
+	if v[4] != nil {
+		a.IATA = v[4].(string) //Null
+	}
+
+	if v[5] != nil {
+		a.ICAO = v[5].(string) //Null
+	}
+
+	a.Latitude = v[6].(float64)
+	a.Longitude = v[7].(float64)
+	a.Altitude = v[8].(float64)
+	a.Timezone = v[9].(float64)
+	a.DST = v[10].(string)
+	a.TzDatabaseTimeZone = v[11].(string)
+	a.Type = v[12].(string)
+	a.Source = v[13].(string)
+
+	return nil
+}

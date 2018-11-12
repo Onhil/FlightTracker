@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/globalsign/mgo"
@@ -155,37 +154,6 @@ func TestGetAirport(t *testing.T) {
 	}
 }
 
-func TestAddAirport(t *testing.T) {
-	db := setupDB(t)
-	defer tearDownDB(t, db)
-
-	db.Init()
-	if db.Count(db.CollectionAirport) != 0 {
-		t.Error("Database not properly initialized, database count should be 0")
-	}
-
-	testAirport1 := Airport{1, "Gjovik Airport", "Gjovik", "Norway", "GJO", "GJOV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
-	testAirport2 := Airport{2, "Bardufoss Airport", "Bardufoss", "Norway", "BAR", "BARD", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
-	testAirport3 := Airport{3, "Molvik Airport", "Molvik", "Norway", "MOL", "MOLV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
-
-	var d []interface{}
-	d = append(d, testAirport1)
-	d = append(d, testAirport2)
-	d = append(d, testAirport3)
-
-	err := db.Add(d, db.CollectionAirport)
-
-	if err != nil {
-		t.Errorf("Error in add, %s", err)
-	}
-
-	if db.Count(db.CollectionAirport) != 3 {
-		fmt.Print(db.Count(db.CollectionAirport)) // DEBUG
-		fmt.Print("\n")                           // DEBUG
-		t.Error("Database not properly initialized, database count should be 3")
-	}
-}
-
 func TestGetAllFlights(t *testing.T) {
 	db := setupDB(t)
 	defer tearDownDB(t, db)
@@ -196,9 +164,9 @@ func TestGetAllFlights(t *testing.T) {
 	}
 
 	var flightList []interface{}
-	flightList = append(flightList, Flight{"A", 0, "D", 0 ,"G" , "J"})
-	flightList = append(flightList, Flight{"B", 0, "E", 0 ,"H" , "K"})
-	flightList = append(flightList, Flight{"C", 0, "F", 0 ,"I" , "L"})
+	flightList = append(flightList, Flight{"A", 0, "D", 0, "G", "J"})
+	flightList = append(flightList, Flight{"B", 0, "E", 0, "H", "K"})
+	flightList = append(flightList, Flight{"C", 0, "F", 0, "I", "L"})
 
 	err := db.Add(flightList, db.CollectionFlight)
 
@@ -227,7 +195,6 @@ func TestGetFlightFieldData(t *testing.T) {
 	if db.Count(db.CollectionFlight) != 0 {
 		t.Error("Database not properly initialized, database count should be 0")
 	}
-
 
 }
 
