@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/go-chi/render"
-
 	"github.com/go-chi/chi"
+	"github.com/go-chi/render"
 )
 
 // Functions
