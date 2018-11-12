@@ -26,7 +26,14 @@ var infowindow = new google.maps.InfoWindow();
 {{range $key, $value := .Planes}}
 
 var test = {lat: {{$value.Latitude}}, lng: {{$value.Longitude}}};
-var marker = new google.maps.Marker({position: test, icon: "http://images2.imagebam.com/99/a1/1e/d32ae41027898954.png", map: map});
+
+var img = {
+    url: "https://raw.githubusercontent.com/Onhil/FlightTracker/master/plane" +  {{$value.TrueTrack}} + ".png",
+    scale: 1,
+    rotation: {{$value.TrueTrack}}
+}
+
+var marker = new google.maps.Marker({position: test, icon: img, map: map});
 
 
 var callsign = {{$value.Callsign}} 
@@ -48,11 +55,8 @@ google.maps.event.addListener(marker, 'click', (function(marker, content, infowi
 {{end}}
 
 
-/*function rotateMarker(selector, degree){
-     $('img[src="img/customMarker.png#'+selector+'"]').css({
-         'transform': 'rotate('+degree+'deg)'
-     });*/
 }
+
 
 </script>
 
