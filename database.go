@@ -35,6 +35,13 @@ func (db *Database) Init() {
 // CollectionState
 // CollectionAirport
 // CollectionFlight
+//
+// Add example
+// var documents []interface{}
+//	 for i := range flights {
+//		 documents = append(documents, flights[i])
+// 	 }
+// err := DBValues.Add(documents, DBValues.CollectionFlight)
 func (db *Database) Add(documents []interface{}, collN string) error {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
