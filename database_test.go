@@ -51,8 +51,8 @@ func TestAdd(t *testing.T) {
 	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
 	sarray = append(sarray, testState)
 
-	err := db.Add(sarray, "testState")
-	
+	err := db.Add(sarray, db.CollectionState)
+
 	if err != nil {
 		t.Error(err)
 	}
@@ -187,10 +187,39 @@ func TestAddAirport(t *testing.T) {
 }
 
 func TestGetAllFlights(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
 
+	db.Init()
+	if db.Count(db.CollectionState) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	var flightList []interface{}
+	flightList = append(flightList, Flight{"A", 0, "D", 0 ,"G" , "J"})
+	flightList = append(flightList, Flight{"B", 0, "E", 0 ,"H" , "K"})
+	flightList = append(flightList, Flight{"C", 0, "F", 0 ,"I" , "L"})
+
+	err := db.Add(flightList, db.CollectionFlight)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if db.Count(db.CollectionFlight) != 3 {
+		t.Error("Database not properly initialized, database count should be 3")
+	}
 }
 
 func TestGetFlightFieldData(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
+
+	db.Init()
+	if db.Count(db.CollectionFlight) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
 
 }
 
