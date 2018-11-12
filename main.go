@@ -5,8 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-
-	"github.com/go-chi/chi"
+	"github.com/gorilla/mux"
 	"github.com/go-chi/render"
 )
 
@@ -40,22 +39,48 @@ func PlaneHandler(w http.ResponseWriter, r *http.Request) {
 
 // OriginCountryHandler handles origin country
 func OriginCountryHandler(w http.ResponseWriter, r *http.Request) {
-	country := chi.URLParam(r, "country")
+	parts := strings.Split(r.URL.Path, "/")
+		
+	country := parts[len(parts)-1]
 	if data, err := DBValues.GetOriginCountry(country); err != nil {
 		http.Error(w, "Country not in database", http.StatusBadRequest)
 	} else {
 		render.JSON(w, r, data)
 	}
+
+	// print out data about country?
+	// get planes from country?
+	// get airports in country?
 }
 
 // DepartureHandler handles departures
 func DepartureHandler(w http.ResponseWriter, r *http.Request) {
-
+	parts := strings.Split(r.URL.Path, "/")
+		
+	depAirport := parts[len(parts)-1]
+	if data, err := DBValues.GetAirport(depAirport); err != nil {
+		http.Error(w, "Departure not in database", http.StatusBadRequest)
+	} else {
+		render.JSON(w, r, data)
+	}
+	
+	// get flights with estimated dep. airport
+	// more?
 }
 
 // ArrivalHandler handles arrivals
 func ArrivalHandler(w http.ResponseWriter, r *http.Request) {
+	parts := strings.Split(r.URL.Path, "/")
+		
+	arrAirport := parts[len(parts)-1]
+	if data, err := DBValues.GetAirport(arrAirport); err != nil {
+		http.Error(w, "Arrival not in database", http.StatusBadRequest)
+	} else {
+		render.JSON(w, r, data)
+	}
 
+	// get flights with estimated arr. airport
+	// more?
 }
 
 // main
@@ -76,21 +101,12 @@ func main() {
 		port = "8080"
 	}
 
-	router := chi.NewRouter()
-	router.Route("/flight-tracker", func(r chi.Router) {
-		r.Get("/", PlaneHandler)
-		r.Route("/country", func(r chi.Router) {
-			r.Get("/{country:[A-Za-z_ ]+}", OriginCountryHandler)
-		})
-		r.Route("/airport", func(r chi.Router) {
-			r.Route("/departing", func(r chi.Router) {
-				r.Get("/{departing:[A-Z]+}", DepartureHandler)
-			})
-			r.Route("/arriving", func(r chi.Router) {
-				r.Get("/{arriving:[A-Z]+}", ArrivalHandler)
-			})
-		})
-	})
+	router := mux.NewRouter()
+	router.HandleFunc("/flight-tracker", PlaneHandler)
+	router.HandleFunc("/flight-tracker/{country:[A-Za-z_ ]+}", OriginCountryHandler) // fix path might crash with other funcs
+	// merge the two funcs below?
+	router.HandleFunc("/flight-tracker/{departing:[A-Z]{4}}", DepartureHandler)
+	router.HandleFunc("/flight-tracker/{arriving:[A-Z]{4}}", ArrivalHandler) 
 	// Handle functions
 	log.Fatal(http.ListenAndServe(":"+port, router))
 }
