@@ -132,3 +132,24 @@ func timeFlights() string {
 	url := fmt.Sprintf("https://opensky-network.org/api/flights/all?begin=%d&end=%d", begin, end)
 	return url
 }
+
+func mergeStatesAndFlights(s []State, f []Flight) []interface{} {
+	var documents []interface{}
+	var planes []Combined
+	for i := range s {
+		for j := range f {
+			var p Combined
+			if s[i].Icao24 == f[j].Icao24 {
+				p = Combined{s[i], f[j]}
+
+			} else {
+				p = Combined{s[i], Flight{}}
+			}
+			planes = append(planes, p)
+		}
+	}
+	for i := range planes {
+		documents = append(documents, planes[i])
+	}
+	return documents
+}
