@@ -142,6 +142,36 @@ func (db *Database) GetAirportInCountry(keyID string) ([]Airport, error) {
 	return ports, err
 }
 
+//GetAllAirports returns all airports in database
+func (db *Database) GetAllAirports() ([]Airport, error) {
+	session, err := mgo.Dial(db.HostURL)
+	if err != nil {
+		panic(err)
+	}
+
+	defer session.Close()
+
+	ports := []Airport{}
+	err = session.DB(db.DatabaseName).C(db.CollectionAirport).Find(nil).All(&ports)
+
+	return ports, err
+}
+
+//GetFlightAirport return all flights departing from given Airport where method = estdepartureairport || estarrivalairport
+func (db * Database) GetFlightAirport(keyID string, method string) ([]Flight, error) {
+	session, err := mgo.Dial(db.HostURL)
+	if err != nil {
+		panic(err)
+	}
+
+	defer session.Close()
+
+	flights := []Flight{}
+	err = session.DB(db.DatabaseName).C(db.CollectionState).Find(bson.M{method: keyID}).All(&flights)
+
+	return flights, err
+}
+
 //GetAllFlights returns all states
 func (db *Database) GetAllFlights() ([]State, error) {
 	session, err := mgo.Dial(db.HostURL)
