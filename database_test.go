@@ -210,7 +210,12 @@ func TestGetAllFlights(t *testing.T) {
 		t.Error("Database not properly initialized, database count should be 3")
 	}
 
-	// states,
+	// The function currently returns states not flights
+	flights, err := db.GetAllFlights()
+
+	if flights != flightList {
+		t.Error("Error in GetAllFlights!")
+	}
 }
 
 func TestGetFlightFieldData(t *testing.T) {
