@@ -29,7 +29,6 @@ func TestOriginCountryHandler(t *testing.T) {
 		t.Error("Database not properly initialized, database count should be 0")
 	}
 
-
 	// adds state with country as one of its values
 	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
 	var testStateArray []interface{}
@@ -43,7 +42,6 @@ func TestOriginCountryHandler(t *testing.T) {
 	if db.Count(db.CollectionState) != 1 {
 		t.Error("Database not properly initialized, database count should be 1")
 	}
-
 
 	// Actual test of the handler in question
 	ts := httptest.NewServer(http.HandlerFunc(OriginCountryHandler))
