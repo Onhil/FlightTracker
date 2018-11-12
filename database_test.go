@@ -196,9 +196,9 @@ func TestGetAllFlights(t *testing.T) {
 	}
 
 	var flightList []interface{}
-	flightList = append(flightList, Flight{"A", 0, "D", 0 ,"G" , "J"})
-	flightList = append(flightList, Flight{"B", 0, "E", 0 ,"H" , "K"})
-	flightList = append(flightList, Flight{"C", 0, "F", 0 ,"I" , "L"})
+	flightList = append(flightList, Flight{"A", 0, "D", 0, "G", "J"})
+	flightList = append(flightList, Flight{"B", 0, "E", 0, "H", "K"})
+	flightList = append(flightList, Flight{"C", 0, "F", 0, "I", "L"})
 
 	err := db.Add(flightList, db.CollectionFlight)
 
@@ -227,7 +227,6 @@ func TestGetFlightFieldData(t *testing.T) {
 	if db.Count(db.CollectionFlight) != 0 {
 		t.Error("Database not properly initialized, database count should be 0")
 	}
-
 
 }
 
