@@ -171,7 +171,7 @@ func (a *Airport) ParseAirport(data []byte) error {
 	}
 
 	if v[5] != nil {
-		a.ICAO = v[5].(string)	//Null
+		a.ICAO = v[5].(string) //Null
 	}
 
 	a.Latitude = v[6].(float64)
