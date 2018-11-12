@@ -159,8 +159,8 @@ func (db *Database) GetAllFlights() ([]State, error) {
 
 }
 
-// GetFlightFieldData accepts bson.M{} to find all flights with choosen paramaters
-func (db *Database) GetFlightFieldData(findData map[string]interface{}) ([]Flight, error) {
+// GetPlanesFieldData accepts bson.M{} to find all flights with choosen paramaters
+func (db *Database) GetPlanesFieldData(findData map[string]interface{}) ([]Combined, error) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -168,10 +168,9 @@ func (db *Database) GetFlightFieldData(findData map[string]interface{}) ([]Fligh
 
 	defer session.Close()
 
-	var flights []Flight
+	var planes []Combined
 
-	err = session.DB(db.DatabaseName).C(db.CollectionFlight).Find(findData).All(&flights)
+	err = session.DB(db.DatabaseName).C(db.CollectionState).Find(findData).All(&planes)
 
-	return flights, err
-
+	return planes, err
 }
