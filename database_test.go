@@ -82,9 +82,9 @@ func TestGetICAO24(t *testing.T) {
 		t.Error("Database not properly initialized, database count should be 1")
 	}
 
-	s, ok := db.GetICAO24("A")
-	if !ok {
-		t.Error("Error in retrival of ICAO24")
+	s, err := db.GetICAO24("A")
+	if err != nil {
+		t.Errorf("Error in retrival of ICAO24, %s", err)
 	}
 	if s != testState {
 		t.Error("Incorrect State were returned")
@@ -112,9 +112,9 @@ func TestGetOriginCountry(t *testing.T) {
 		t.Error("Database not properly initialized, database count should be 1")
 	}
 
-	s, ok := db.GetOriginCountry("C")
-	if !ok {
-		t.Error("Error in retrival of OriginCountry")
+	s, err := db.GetOriginCountry("C")
+	if err != nil {
+		t.Errorf("Error in retrival of OriginCountry, %s", err)
 	}
 	if s[0] != testState {
 		t.Error("Incorrect State were returned")
@@ -145,9 +145,9 @@ func TestGetAirport(t *testing.T) {
 		t.Error("There should not have been any errors!")
 	}
 
-	a, ok := db.GetAirport("BARD")
-	if !ok {
-		t.Error("Error in retrival of OriginCountry")
+	a, err := db.GetAirport("BARD")
+	if err != nil {
+		t.Errorf("Error in retrival of OriginCountry, %s", err)
 	}
 
 	if a != testAirport2 {
@@ -176,7 +176,7 @@ func TestAddAirport(t *testing.T) {
 	err := db.Add(d, db.CollectionAirport)
 
 	if err != nil {
-		t.Error("There should not have been any errors!")
+		t.Errorf("Error in add, %s", err)
 	}
 
 	if db.Count(db.CollectionAirport) != 3 {
@@ -203,12 +203,14 @@ func TestGetAllFlights(t *testing.T) {
 	err := db.Add(flightList, db.CollectionFlight)
 
 	if err != nil {
-		t.Error(err)
+		t.Errorf("Error in retrival of all flights, %s", err)
 	}
 
 	if db.Count(db.CollectionFlight) != 3 {
 		t.Error("Database not properly initialized, database count should be 3")
 	}
+
+	// states,
 }
 
 func TestGetFlightFieldData(t *testing.T) {
