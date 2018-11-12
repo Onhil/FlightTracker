@@ -152,6 +152,7 @@ func (db *Database) GetAllFlights() ([]State, bool) {
 
 }
 
+// GetFlightFieldData accepts bson.M{} to find all flights with choosen paramaters
 func (db *Database) GetFlightFieldData(findData map[string]interface{}) ([]Flight, bool) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
