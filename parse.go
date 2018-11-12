@@ -139,13 +139,14 @@ func mergeStatesAndFlights(s []State, f []Flight) []interface{} {
 	for i := range s {
 		for j := range f {
 			var p Combined
-			if s[i].Icao24 == f[j].Icao24 {
+			if s[i].Callsign == f[j].Callsign {
 				p = Combined{s[i], f[j]}
+				planes = append(planes, p)
 
-			} else {
+			} /* else {
 				p = Combined{s[i], Flight{}}
-			}
-			planes = append(planes, p)
+			} */
+
 		}
 	}
 	for i := range planes {
