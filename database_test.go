@@ -38,7 +38,199 @@ func tearDownDB(t *testing.T, db *Database) {
 	}
 }
 
-/// Commented out likely not needed as UpdateState is changed to removing all documents and adding new ones therefore no duplicates
+func TestAdd(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
+
+	db.Init()
+	if db.Count(db.CollectionState) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	var sarray []interface{}
+	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	sarray = append(sarray, testState)
+
+	err := db.Add(sarray, db.CollectionState)
+
+	if err != nil {
+		t.Error(err)
+	}
+	if db.Count(db.CollectionState) != 1 {
+		t.Error("Database not properly initialized, database count should be 1")
+	}
+}
+
+func TestGetICAO24(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
+
+	db.Init()
+	if db.Count(db.CollectionState) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	var testStateArray []interface{}
+	testStateArray = append(testStateArray, testState)
+
+	err := db.Add(testStateArray, db.CollectionState)
+	if err != nil {
+		t.Error(err)
+	}
+	if db.Count(db.CollectionState) != 1 {
+		t.Error("Database not properly initialized, database count should be 1")
+	}
+
+	s, err := db.GetICAO24("A")
+	if err != nil {
+		t.Errorf("Error in retrival of ICAO24, %s", err)
+	}
+	if s != testState {
+		t.Error("Incorrect State were returned")
+	}
+}
+
+func TestGetOriginCountry(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
+
+	db.Init()
+	if db.Count(db.CollectionState) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	var testStateArray []interface{}
+	testStateArray = append(testStateArray, testState)
+
+	err := db.Add(testStateArray, db.CollectionState)
+	if err != nil {
+		t.Error(err)
+	}
+	if db.Count(db.CollectionState) != 1 {
+		t.Error("Database not properly initialized, database count should be 1")
+	}
+
+	s, err := db.GetOriginCountry("C")
+	if err != nil {
+		t.Errorf("Error in retrival of OriginCountry, %s", err)
+	}
+	if s[0] != testState {
+		t.Error("Incorrect State were returned")
+	}
+}
+
+func TestGetAirport(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
+
+	db.Init()
+	if db.Count(db.CollectionAirport) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	testAirport1 := Airport{1, "Gjovik Airport", "Gjovik", "Norway", "GJO", "GJOV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
+	testAirport2 := Airport{2, "Bardufoss Airport", "Bardufoss", "Norway", "BAR", "BARD", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
+	testAirport3 := Airport{3, "Molvik Airport", "Molvik", "Norway", "MOL", "MOLV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
+
+	var d []interface{}
+	d = append(d, testAirport1)
+	d = append(d, testAirport2)
+	d = append(d, testAirport3)
+
+	err := db.Add(d, db.CollectionAirport)
+
+	if err != nil {
+		t.Error("There should not have been any errors!")
+	}
+
+	a, err := db.GetAirport("BARD")
+	if err != nil {
+		t.Errorf("Error in retrival of OriginCountry, %s", err)
+	}
+
+	if a != testAirport2 {
+		t.Error("Incorrect airport was returned")
+	}
+}
+
+func TestAddAirport(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
+
+	db.Init()
+	if db.Count(db.CollectionAirport) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	testAirport1 := Airport{1, "Gjovik Airport", "Gjovik", "Norway", "GJO", "GJOV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
+	testAirport2 := Airport{2, "Bardufoss Airport", "Bardufoss", "Norway", "BAR", "BARD", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
+	testAirport3 := Airport{3, "Molvik Airport", "Molvik", "Norway", "MOL", "MOLV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
+
+	var d []interface{}
+	d = append(d, testAirport1)
+	d = append(d, testAirport2)
+	d = append(d, testAirport3)
+
+	err := db.Add(d, db.CollectionAirport)
+
+	if err != nil {
+		t.Errorf("Error in add, %s", err)
+	}
+
+	if db.Count(db.CollectionAirport) != 3 {
+		fmt.Print(db.Count(db.CollectionAirport)) // DEBUG
+		fmt.Print("\n")                           // DEBUG
+		t.Error("Database not properly initialized, database count should be 3")
+	}
+}
+
+func TestGetAllFlights(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
+
+	db.Init()
+	if db.Count(db.CollectionState) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	var flightList []interface{}
+	flightList = append(flightList, Flight{"A", 0, "D", 0 ,"G" , "J"})
+	flightList = append(flightList, Flight{"B", 0, "E", 0 ,"H" , "K"})
+	flightList = append(flightList, Flight{"C", 0, "F", 0 ,"I" , "L"})
+
+	err := db.Add(flightList, db.CollectionFlight)
+
+	if err != nil {
+		t.Errorf("Error in retrival of all flights, %s", err)
+	}
+
+	if db.Count(db.CollectionFlight) != 3 {
+		t.Error("Database not properly initialized, database count should be 3")
+	}
+
+	// The function currently returns states not flights
+	flights, err := db.GetAllFlights()
+
+	if flights != flightList {
+		t.Error("Error in GetAllFlights!")
+	}
+}
+
+func TestGetFlightFieldData(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
+
+	db.Init()
+	if db.Count(db.CollectionFlight) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+
+}
+
+/// Commented out likely not needed as UpdateState is changed to removing all documents and adding new ones
 
 /* func TestAddDuplicates(t *testing.T) {
 	db := setupDB(t)
@@ -106,133 +298,6 @@ func tearDownDB(t *testing.T, db *Database) {
 	}
 
 } */
-
-func TestAddAirport(t *testing.T) {
-	db := setupDB(t)
-	defer tearDownDB(t, db)
-
-	db.Init()
-	if db.Count(db.CollectionAirport) != 0 {
-		t.Error("Database not properly initialized, database count should be 0")
-	}
-
-	testAirport1 := Airport{1, "Gjovik Airport", "Gjovik", "Norway", "GJO", "GJOV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
-	testAirport2 := Airport{2, "Bardufoss Airport", "Bardufoss", "Norway", "BAR", "BARD", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
-	testAirport3 := Airport{3, "Molvik Airport", "Molvik", "Norway", "MOL", "MOLV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
-
-	var d []interface{}
-	d = append(d, testAirport1)
-	d = append(d, testAirport2)
-	d = append(d, testAirport3)
-
-	err := db.Add(d, db.CollectionAirport)
-
-	if err != nil {
-		t.Error("There should not have been any errors!")
-	}
-
-	if db.Count(db.CollectionAirport) != 3 {
-		fmt.Print(db.Count(db.CollectionAirport)) // DEBUG
-		fmt.Print("\n")                           // DEBUG
-		t.Error("Database not properly initialized, database count should be 3")
-	}
-}
-
-func TestGetICAO24(t *testing.T) {
-	db := setupDB(t)
-	defer tearDownDB(t, db)
-
-	db.Init()
-	if db.Count(db.CollectionState) != 0 {
-		t.Error("Database not properly initialized, database count should be 0")
-	}
-
-	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
-	var testStateArray []interface{}
-	testStateArray = append(testStateArray, testState)
-
-	err := db.Add(testStateArray, db.CollectionState)
-	if err != nil {
-		t.Error(err)
-	}
-	if db.Count(db.CollectionState) != 1 {
-		t.Error("Database not properly initialized, database count should be 1")
-	}
-
-	s, ok := db.GetICAO24("A")
-	if !ok {
-		t.Error("Error in retrival of ICAO24")
-	}
-	if s != testState {
-		t.Error("Incorrect State were returned")
-	}
-}
-
-func TestGetOriginCountry(t *testing.T) {
-	db := setupDB(t)
-	defer tearDownDB(t, db)
-
-	db.Init()
-	if db.Count(db.CollectionState) != 0 {
-		t.Error("Database not properly initialized, database count should be 0")
-	}
-
-	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
-	var testStateArray []interface{}
-	testStateArray = append(testStateArray, testState)
-
-	err := db.Add(testStateArray, db.CollectionState)
-	if err != nil {
-		t.Error(err)
-	}
-	if db.Count(db.CollectionState) != 1 {
-		t.Error("Database not properly initialized, database count should be 1")
-	}
-
-	s, ok := db.GetOriginCountry("C")
-	if !ok {
-		t.Error("Error in retrival of OriginCountry")
-	}
-	if s[0] != testState {
-		t.Error("Incorrect State were returned")
-	}
-}
-
-func TestGetAirport(t *testing.T) {
-	db := setupDB(t)
-	defer tearDownDB(t, db)
-
-	db.Init()
-	if db.Count(db.CollectionAirport) != 0 {
-		t.Error("Database not properly initialized, database count should be 0")
-	}
-
-	testAirport1 := Airport{1, "Gjovik Airport", "Gjovik", "Norway", "GJO", "GJOV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
-	testAirport2 := Airport{2, "Bardufoss Airport", "Bardufoss", "Norway", "BAR", "BARD", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
-	testAirport3 := Airport{3, "Molvik Airport", "Molvik", "Norway", "MOL", "MOLV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
-
-	var d []interface{}
-	d = append(d, testAirport1)
-	d = append(d, testAirport2)
-	d = append(d, testAirport3)
-
-	err := db.Add(d, db.CollectionAirport)
-
-	if err != nil {
-		t.Error("There should not have been any errors!")
-	}
-
-	a, ok := db.GetAirport("BARD")
-	if !ok {
-		t.Error("Error in retrival of OriginCountry")
-	}
-
-	if a != testAirport2 {
-		t.Error("Incorrect airport was returned")
-	}
-}
-
-/// Commented out likely not needed as UpdateState is changed to removing all documents and adding new ones
 
 /* func TestUpdateState(t *testing.T) {
 	db := setupDB(t)

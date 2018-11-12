@@ -8,7 +8,7 @@ type States struct {
 	States []State `json:"states"`
 }
 
-// State os a struct witch
+// State is a struct witch stores states of data
 type State struct {
 	Icao24        string `json:"Icao24"`        // Unique ICAO 24-bit address of the transponder in hex string representation.
 	Callsign      string `json:"Callsign"`      // Callsign of the vehicle (8 chars). Can be null if no callsign has been received.

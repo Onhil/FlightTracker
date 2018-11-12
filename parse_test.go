@@ -5,6 +5,7 @@ import (
 )
 
 func TestUnmarshalJSON(t *testing.T) { // WIP
+	/*
 	s := State{}
 	err := s.UnmarshalJSON([]byte(`{
 		"time": 1541448600,
@@ -30,5 +31,5 @@ func TestUnmarshalJSON(t *testing.T) { // WIP
 			]]}`))
 	if err != nil {
 		// t.Error(err)
-	}
+	}*/
 }

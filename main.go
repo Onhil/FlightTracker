@@ -42,7 +42,7 @@ func PlaneHandler(w http.ResponseWriter, r *http.Request) {
 // OriginCountryHandler handles origin country
 func OriginCountryHandler(w http.ResponseWriter, r *http.Request) {
 	country := chi.URLParam(r, "country")
-	if data, ok := DBValues.GetOriginCountry(country); !ok {
+	if data, err := DBValues.GetOriginCountry(country); err != nil {
 		http.Error(w, "Country not in database", http.StatusBadRequest)
 	} else {
 		render.JSON(w, r, data)

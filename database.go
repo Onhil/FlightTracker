@@ -83,7 +83,7 @@ func (db *Database) Count(collN string) int {
 }
 
 // GetICAO24 gets the ICA024 from the database or returns false and an empty state object
-func (db *Database) GetICAO24(keyID string) (State, bool) {
+func (db *Database) GetICAO24(keyID string) (State, error) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -93,15 +93,12 @@ func (db *Database) GetICAO24(keyID string) (State, bool) {
 
 	state := State{}
 	err = session.DB(db.DatabaseName).C(db.CollectionState).Find(bson.M{"icao24": keyID}).One(&state)
-	if err != nil {
-		return state, false
-	}
 
-	return state, true
+	return state, err
 }
 
 // GetOriginCountry returns the origin country if it is in the database and an empty object and false if not
-func (db *Database) GetOriginCountry(keyID string) ([]State, bool) {
+func (db *Database) GetOriginCountry(keyID string) ([]State, error) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -111,15 +108,12 @@ func (db *Database) GetOriginCountry(keyID string) ([]State, bool) {
 
 	state := []State{}
 	err = session.DB(db.DatabaseName).C(db.CollectionState).Find(bson.M{"origincountry": keyID}).All(&state)
-	if err != nil {
-		return state, false
-	}
 
-	return state, true
+	return state, err
 }
 
 // GetAirport returns airport after ICAO code and true if in database, and an empty object and false if not
-func (db *Database) GetAirport(keyID string) (Airport, bool) {
+func (db *Database) GetAirport(keyID string) (Airport, error) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -129,14 +123,11 @@ func (db *Database) GetAirport(keyID string) (Airport, bool) {
 
 	port := Airport{}
 	err = session.DB(db.DatabaseName).C(db.CollectionAirport).Find(bson.M{"icao": keyID}).One(&port)
-	if err != nil {
-		return port, false
-	}
 
-	return port, true
+	return port, err
 }
 
-func (db *Database) GetAllFlights() ([]State, bool) {
+func (db *Database) GetAllFlights() ([]State, error) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -148,12 +139,12 @@ func (db *Database) GetAllFlights() ([]State, bool) {
 
 	err = session.DB(db.DatabaseName).C(db.CollectionState).Find(nil).All(&states)
 
-	return states, true
+	return states, err
 
 }
 
 // GetFlightFieldData accepts bson.M{} to find all flights with choosen paramaters
-func (db *Database) GetFlightFieldData(findData map[string]interface{}) ([]Flight, bool) {
+func (db *Database) GetFlightFieldData(findData map[string]interface{}) ([]Flight, error) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -165,6 +156,6 @@ func (db *Database) GetFlightFieldData(findData map[string]interface{}) ([]Fligh
 
 	err = session.DB(db.DatabaseName).C(db.CollectionFlight).Find(findData).All(&flights)
 
-	return flights, true
+	return flights, err
 
 }
