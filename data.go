@@ -69,6 +69,12 @@ type Airport struct {
 	Source             string  `json:"Source"`                //Source of this data. "OurAirports" is the only source
 }
 
+type AirportJSON struct {
+	Aport     Airport `json:"Airport"`
+	Arriving  string  `json:"Arriving"`
+	Departing string  `json:"Departing"`
+}
+
 // Database holds database basic data
 type Database struct {
 	HostURL           string

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
@@ -50,10 +51,6 @@ func OriginCountryHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		render.JSON(w, r, data)
 	}
-
-	// print out data about country?
-	// get planes from country?
-	// get airports in country?
 }
 
 // DepartureHandler handles departures
@@ -66,9 +63,6 @@ func DepartureHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		render.JSON(w, r, data)
 	}
-
-	// get flights with estimated dep. airport
-	// more?
 }
 
 // ArrivalHandler handles arrivals
@@ -76,56 +70,70 @@ func ArrivalHandler(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
 
 	arrAirport := parts[len(parts)-1]
-	if data, err := DBValues.GetPlanes(bson.M{"estarrivalaiport": arrAirport}); err != nil {
+	if data, err := DBValues.GetPlanes(bson.M{"estArrivalAirport": arrAirport}); err != nil {
 		http.Error(w, "Arrival not in database", http.StatusBadRequest)
 	} else {
 		render.JSON(w, r, data)
 	}
-
-	// get flights with estimated arr. airport
-	// more?
 }
 
+// PlaneListHandler Lists all planes by ICAO24
 func PlaneListHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	planes := []Planes{}
+	planes, err := DBValues.GetPlanes(nil)
+
+	for i := 0; i < len(planes); i++ {
+		planes = append(planes, planes[i].Icao24)
+	}
+
+	IcaoJSON, _ := json.Marshal(planes)
+	w.WriteHeader(http.StatusOK)
+	w.Write(IcaoJSON)
+}
+
+/*
+func PlaneInfoHandler(w http.ResponseWriter, r *http.Request) {			// Returns information about plane
 
 }
 
-func PlaneInfoHandler(w http.ResponseWriter, r *http.Request) {
+func PlaneFieldHandler(w http.ResponseWriter, r *http.Request) { 		// Returns information about a certain field for the plane
 
 }
 
-func PlaneFieldHandler(w http.ResponseWriter, r *http.Request) {
+func PlaneMapHandler(w http.ResponseWriter, r *http.Request) {	 		// Shows the plane on the map
 
 }
 
-func PlaneMapHandler(w http.ResponseWriter, r *http.Request) {
+func CountryHandler(w http.ResponseWriter, r *http.Request) {			// Returns all planes from a country
 
 }
 
-func OriginCountryMapHandler(w http.ResponseWriter, r *http.Request) {
+func CountryMapHandler(w http.ResponseWriter, r *http.Request) {		// Shows all planes from country on the map
 
 }
 
-func AirportListHandler(w http.ResponseWriter, r *http.Request) {
+func AirportListHandler(w http.ResponseWriter, r *http.Request) {		// Lists all airports by ICAO
+
+}
+																		// Returns information about the airport and
+func AirportInfoHandler(w http.ResponseWriter, r *http.Request) {		// the ICAO24 of all planes that arrives and depart from it
 
 }
 
-func AirportHandler(w http.ResponseWriter, r *http.Request) {
+func AirportFieldHandler(w http.ResponseWriter, r *http.Request) {		// Returns the field information for the airport
 
 }
 
-func AirportFieldHandler(w http.ResponseWriter, r *http.Request) {
+func AirportCountryHandler(w http.ResponseWriter, r *http.Request) {	// Returns all countries with an airport
 
 }
 
-func AirportCountryHandler(w http.ResponseWriter, r *http.Request) {
+func AirportInCountryHandler(w http.ResponseWriter, r *http.Request) {	// Names all the airports in the given country
 
 }
-
-func AirportInCountryHandler(w http.ResponseWriter, r *http.Request) {
-
-}
-
+*/
 // main
 func main() {
 
@@ -146,17 +154,18 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/flight-tracker", PlaneHandler)
+	router.HandleFunc("/flight-tracker/{country:.+}", OriginCountryHandler)
 	router.HandleFunc("/flight-tracker/plane", PlaneListHandler)
-	router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]+}", PlaneInfoHandler)
+	/*router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]+}", PlaneInfoHandler)
 	router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]}/{field:[A-Za-z0-9]+}", PlaneFieldHandler)
 	router.HandleFunc("/flight-tracker/plane/map/{icao24:[A-Za-z0-9]+}", PlaneMapHandler)
-	router.HandleFunc("/flight-tracker/plane/country/{country:.+}", OriginCountryHandler)
-	router.HandleFunc("/flight-tracker/plane/country/map/{country:.+}", OriginCountryMapHandler)
+	router.HandleFunc("/flight-tracker/plane/country/{country:.+}", CountryHandler)
+	router.HandleFunc("/flight-tracker/plane/country/map/{country:.+}", CountryMapHandler)
 	router.HandleFunc("/flight-tracker/airport", AirportListHandler)
-	router.HandleFunc("/flight-tracker/airport/{icao:[A-Z]{4}}", AirportHandler)
+	router.HandleFunc("/flight-tracker/airport/{icao:[A-Z]{4}}", AirportInfoHandler)
 	router.HandleFunc("/flight-tracker/airport/{icao:[A-Z]{4}}/{field:[A-Za-z0-9]+}", AirportFieldHandler)
 	router.HandleFunc("/flight-tracker/airport/country", AirportCountryHandler)
-	router.HandleFunc("/flight-tracker/airport/country/{country:.+}", AirportInCountryHandler)
+	router.HandleFunc("/flight-tracker/airport/country/{country:.+}", AirportInCountryHandler)*/
 	router.HandleFunc("/flight-tracker/{departing:[A-Z]{4}}", DepartureHandler)
 	router.HandleFunc("/flight-tracker/{arriving:[A-Z]{4}}", ArrivalHandler)
 	// Handle functions
