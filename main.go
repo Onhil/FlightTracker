@@ -98,43 +98,53 @@ func PlaneListHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 /*
-func PlaneInfoHandler(w http.ResponseWriter, r *http.Request) {			// Returns information about plane
+// PlaneInfoHandler Returns information about plane
+func PlaneInfoHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func PlaneFieldHandler(w http.ResponseWriter, r *http.Request) { 		// Returns information about a certain field for the plane
+// PlaneFieldHandler Returns information about a certain field for the plane
+func PlaneFieldHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func PlaneMapHandler(w http.ResponseWriter, r *http.Request) {	 		// Shows the plane on the map
+// PlaneMapHandler Shows the plane on the map
+func PlaneMapHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func CountryHandler(w http.ResponseWriter, r *http.Request) {			// Returns all planes from a country
+// CountryHandler Returns all planes from a country
+func CountryHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func CountryMapHandler(w http.ResponseWriter, r *http.Request) {		// Shows all planes from country on the map
+// CountryMapHandler Shows all planes from country on the map
+func CountryMapHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func AirportListHandler(w http.ResponseWriter, r *http.Request) {		// Lists all airports by ICAO
-
-}
-																		// Returns information about the airport and
-func AirportInfoHandler(w http.ResponseWriter, r *http.Request) {		// the ICAO24 of all planes that arrives and depart from it
+// AirportListHandler Lists all airports by ICAO
+func AirportListHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func AirportFieldHandler(w http.ResponseWriter, r *http.Request) {		// Returns the field information for the airport
+// AirportInfoHandler Returns information about the airport and the ICAO24 of all planes that arrives and depart from it
+func AirportInfoHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func AirportCountryHandler(w http.ResponseWriter, r *http.Request) {	// Returns all countries with an airport
+// AirportFieldHandler Returns the field information for the airport
+func AirportFieldHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func AirportInCountryHandler(w http.ResponseWriter, r *http.Request) {	// Names all the airports in the given country
+// AirportCountryHandler Returns all countries with an airport
+func AirportCountryHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+// AirportInCountryHandler Names all the airports in the given country
+func AirportInCountryHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 */
