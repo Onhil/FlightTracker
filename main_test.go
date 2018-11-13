@@ -47,10 +47,14 @@ func TestOriginCountryHandler(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(OriginCountryHandler))
 	defer ts.Close()
 	// WIP
-	// _, err = http.Get(ts.URL + "/{country:C}")
+	resp, err := http.Get(ts.URL + "/C")
+
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusOK, resp.StatusCode)
+	}
 
 	if err != nil {
-		// t.Error(err)
+		t.Error(err)
 	}
 }
 

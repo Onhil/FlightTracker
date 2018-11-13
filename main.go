@@ -1,13 +1,13 @@
 package main
 
 import (
+	"github.com/go-chi/render"
+	"github.com/gorilla/mux"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"strings"
-	"github.com/gorilla/mux"
-	"github.com/go-chi/render"
 )
 
 // Functions
@@ -41,7 +41,7 @@ func PlaneHandler(w http.ResponseWriter, r *http.Request) {
 // OriginCountryHandler handles origin country
 func OriginCountryHandler(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
-		
+
 	country := parts[len(parts)-1]
 	if data, err := DBValues.GetOriginCountry(country); err != nil {
 		http.Error(w, "Country not in database", http.StatusBadRequest)
@@ -57,14 +57,14 @@ func OriginCountryHandler(w http.ResponseWriter, r *http.Request) {
 // DepartureHandler handles departures
 func DepartureHandler(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
-		
+
 	depAirport := parts[len(parts)-1]
 	if data, err := DBValues.GetAirport(depAirport); err != nil {
 		http.Error(w, "Departure not in database", http.StatusBadRequest)
 	} else {
 		render.JSON(w, r, data)
 	}
-	
+
 	// get flights with estimated dep. airport
 	// more?
 }
@@ -72,7 +72,7 @@ func DepartureHandler(w http.ResponseWriter, r *http.Request) {
 // ArrivalHandler handles arrivals
 func ArrivalHandler(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
-		
+
 	arrAirport := parts[len(parts)-1]
 	if data, err := DBValues.GetAirport(arrAirport); err != nil {
 		http.Error(w, "Arrival not in database", http.StatusBadRequest)
@@ -107,7 +107,7 @@ func main() {
 	router.HandleFunc("/flight-tracker/{country:[A-Za-z_ ]+}", OriginCountryHandler) // fix path might crash with other funcs
 	// merge the two funcs below?
 	router.HandleFunc("/flight-tracker/{departing:[A-Z]{4}}", DepartureHandler)
-	router.HandleFunc("/flight-tracker/{arriving:[A-Z]{4}}", ArrivalHandler) 
+	router.HandleFunc("/flight-tracker/{arriving:[A-Z]{4}}", ArrivalHandler)
 	// Handle functions
 	log.Fatal(http.ListenAndServe(":"+port, router))
 }

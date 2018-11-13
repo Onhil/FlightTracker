@@ -158,7 +158,7 @@ func (db *Database) GetAllAirports() ([]Airport, error) {
 }
 
 //GetFlightAirport return all flights departing from given Airport where method = estdepartureairport || estarrivalairport
-func (db * Database) GetFlightAirport(keyID string, method string) ([]Flight, error) {
+func (db *Database) GetFlightAirport(keyID string, method string) ([]Flight, error) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
