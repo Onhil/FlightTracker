@@ -135,16 +135,16 @@ func timeFlights() string {
 
 func mergeStatesAndFlights(s []State, f []Flight) []interface{} {
 	var documents []interface{}
-	var planes []Combined
+	var planes []Planes
 	for i := range s {
 		for j := range f {
-			var p Combined
+			var p Planes
 			if s[i].Callsign == f[j].Callsign {
-				p = Combined{s[i], f[j]}
+				p = Planes{s[i], f[j]}
 				planes = append(planes, p)
 
 			} /* else {
-				p = Combined{s[i], Flight{}}
+				p = Planes{s[i], Flight{}}
 			} */
 
 		}

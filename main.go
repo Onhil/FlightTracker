@@ -1,13 +1,15 @@
 package main
 
 import (
-	"github.com/go-chi/render"
-	"github.com/gorilla/mux"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/globalsign/mgo/bson"
+	"github.com/go-chi/render"
+	"github.com/gorilla/mux"
 )
 
 // Functions
@@ -15,10 +17,10 @@ import (
 // PlaneHandler is the function which handles planes and displays a google map, it is currently in an early stage of development.
 func PlaneHandler(w http.ResponseWriter, r *http.Request) {
 
-	var pllanes []State
-	pllanes, _ = DBValues.GetAllFlights()
+	var pllanes []Planes
+	pllanes, _ = DBValues.GetPlanes(nil)
 
-	planes := make(map[int]State)
+	planes := make(map[int]Planes)
 
 	for i := 0; i < len(pllanes); i++ {
 		planes[i] = pllanes[i]
@@ -43,7 +45,7 @@ func OriginCountryHandler(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
 
 	country := parts[len(parts)-1]
-	if data, err := DBValues.GetOriginCountry(country); err != nil {
+	if data, err := DBValues.GetPlanes(bson.M{"origincountry": country}); err != nil {
 		http.Error(w, "Country not in database", http.StatusBadRequest)
 	} else {
 		render.JSON(w, r, data)

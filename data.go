@@ -45,8 +45,8 @@ type Flight struct {
 	// ArrivalAirportCandidatesCount    int    // Number of other possible departure airports. These are airports in short distance to estArrivalAirport.
 }
 
-// Combined is a struct with data from states and flights
-type Combined struct {
+// Planes is a struct with data from states and flights
+type Planes struct {
 	State
 	Flight
 }
@@ -92,7 +92,7 @@ type PlaneMarker struct {
 // Markers holds markers values
 type Markers struct {
 	Title  string
-	Planes map[int]State
+	Planes map[int]Planes
 }
 
 // DBValues is a database element which is accessible everywhere, not sure if this is needed to be honest
