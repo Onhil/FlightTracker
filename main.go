@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
@@ -76,21 +77,18 @@ func ArrivalHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func PlaneListHandler(w http.ResponseWriter, r *http.Request) {			// Lists all planes by ICAO24
+// PlaneListHandler Lists all planes by ICAO24
+func PlaneListHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	var planes []string{}
-	planes, _ = DBValues.GetPlanes(nil)
+	planes := []Planes{}
+	planes, err := DBValues.GetPlanes(nil)
 
-	for i := len(planes); i++ {
-		planes = append(planes, plane[i].Icao24)
+	for i := 0; i < len(planes); i++ {
+		planes = append(planes, planes[i].Icao24)
 	}
 
-	IcaoJSON, err := json.Marshal(planes)
-	if err != nil {
-		error400(w)
-		return
-	}
+	IcaoJSON, _ := json.Marshal(planes)
 	w.WriteHeader(http.StatusOK)
 	w.Write(IcaoJSON)
 }
