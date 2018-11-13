@@ -86,6 +86,46 @@ func ArrivalHandler(w http.ResponseWriter, r *http.Request) {
 	// more?
 }
 
+func PlaneListHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func PlaneInfoHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func PlaneFieldHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func PlaneMapHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func OriginCountryMapHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func AirportListHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func AirportHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func AirportFieldHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func AirportCountryHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func AirportInCountryHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
 // main
 func main() {
 
@@ -106,8 +146,17 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/flight-tracker", PlaneHandler)
-	router.HandleFunc("/flight-tracker/{country:[A-Za-z_ ]+}", OriginCountryHandler) // fix path might crash with other funcs
-	// merge the two funcs below?
+	router.HandleFunc("/flight-tracker/plane", PlaneListHandler)
+	router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]+}", PlaneInfoHandler)
+	router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]}/{field:[A-Za-z0-9]+}", PlaneFieldHandler)
+	router.HandleFunc("/flight-tracker/plane/map/{icao24:[A-Za-z0-9]+}", PlaneMapHandler)
+	router.HandleFunc("/flight-tracker/plane/country/{country:.+}", OriginCountryHandler)
+	router.HandleFunc("/flight-tracker/plane/country/map/{country:.+}", OriginCountryMapHandler)
+	router.HandleFunc("/flight-tracker/airport", AirportListHandler)
+	router.HandleFunc("/flight-tracker/airport/{icao:[A-Z]{4}}", AirportHandler)
+	router.HandleFunc("/flight-tracker/airport/{icao:[A-Z]{4}}/{field:[A-Za-z0-9]+}", AirportFieldHandler)
+	router.HandleFunc("/flight-tracker/airport/country", AirportCountryHandler)
+	router.HandleFunc("/flight-tracker/airport/country/{country:.+}", AirportInCountryHandler)
 	router.HandleFunc("/flight-tracker/{departing:[A-Z]{4}}", DepartureHandler)
 	router.HandleFunc("/flight-tracker/{arriving:[A-Z]{4}}", ArrivalHandler)
 	// Handle functions
