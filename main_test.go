@@ -64,6 +64,17 @@ func TestOriginCountryHandler(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	/*
+		narr, err := http.Get(ts.URL + "/")
+
+		if narr.StatusCode != http.StatusBadRequest {
+			t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, narr.StatusCode)
+		}
+
+		if err != nil {
+			t.Error(err)
+		}
+	*/
 }
 
 func TestDepartureHandler(t *testing.T) {
