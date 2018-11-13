@@ -133,26 +133,45 @@ func timeFlights() string {
 	return url
 }
 
-func mergeStatesAndFlights(s []State, f []Flight) []interface{} {
-	var documents []interface{}
+func mergeStatesAndFlights(s []State, f []Flight) []Planes {
 	var planes []Planes
+	var p Planes
+	// Adds j from for loop f that has the same callsing as s
+	var fCall []int
+
 	for i := range s {
-		for j := range f {
-			var p Planes
-			if s[i].Callsign == f[j].Callsign {
-				p = Planes{s[i], f[j]}
-				planes = append(planes, p)
 
-			} /* else {
-				p = Planes{s[i], Flight{}}
-			} */
-
+		if s[i].Callsign != "" {
+			for j := range f {
+				// If s and f callsign is the same it merges them into planes
+				if s[i].Callsign == f[j].Callsign {
+					p = Planes{s[i], f[j]}
+					planes = append(planes, p)
+					fCall = append(fCall, j)
+				}
+			}
+			// If s callsign is empty add it seperatly to planes
+		} else {
+			p = Planes{s[i], Flight{}}
+			planes = append(planes, p)
 		}
 	}
-	for i := range planes {
-		documents = append(documents, planes[i])
+
+	for i := range f {
+		b := false
+		// Checks wether or not index has been used before
+		for j := range fCall {
+			if i == fCall[j] {
+				b = true
+			}
+		}
+		// If index have not been used it adds flight to planes
+		if !b {
+			p = Planes{State{}, f[i]}
+			planes = append(planes, p)
+		}
 	}
-	return documents
+	return planes
 }
 
 // ## EXAMPLE USES OF AIPORT MARSHAL

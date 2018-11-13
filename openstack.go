@@ -14,30 +14,42 @@ func Run() {
 	for {
 		// Concurrent updating of states and flights
 		// This might go horribly wrong at some point
-
-		DBValues.Add(mergeStatesAndFlights(updateStates(), updateFlights()), DBValues.CollectionState)
+		go updateStates()
+		go updateFlights()
 		fmt.Println("Next update in 15 min")
 		time.Sleep(15 * time.Minute)
 	}
 }
 
-func updateStates() []State {
+func updateStates() {
 	var state States
 
 	if err := json.Unmarshal(body("https://opensky-network.org/api/states/all"), &state); err != nil {
 		fmt.Println(err)
 	}
 
-	return state.States
+	var documents []interface{}
+	for i := range state.States {
+		documents = append(documents, state.States[i])
+	}
+	if err := DBValues.Add(documents, DBValues.CollectionState); err != nil {
+		fmt.Println(err)
+	}
 }
-func updateFlights() []Flight {
+func updateFlights() {
 	var flights []Flight
 
 	if err := json.Unmarshal(body(timeFlights()), &flights); err != nil {
 		fmt.Println(err)
 	}
 
-	return flights
+	var documents []interface{}
+	for i := range flights {
+		documents = append(documents, flights[i])
+	}
+	if err := DBValues.Add(documents, DBValues.CollectionFlight); err != nil {
+		fmt.Println(err)
+	}
 }
 
 func body(url string) []byte {

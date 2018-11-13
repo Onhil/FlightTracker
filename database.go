@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
 )
 
 // Init checks if the Database actually works
@@ -84,7 +85,7 @@ func (db *Database) Count(collN string) int {
 // GetPlanes accepts bson.M{} to find all flights with choosen paramaters
 // Example
 // findData == bson.M{"origincountry": "Italy"}
-func (db *Database) GetPlanes(findData map[string]interface{}) ([]Planes, error) {
+func (db *Database) GetPlanes(findData bson.M) ([]Planes, error) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -92,10 +93,13 @@ func (db *Database) GetPlanes(findData map[string]interface{}) ([]Planes, error)
 
 	defer session.Close()
 
-	var planes []Planes
+	var state []State
+	var flight []Flight
 
-	err = session.DB(db.DatabaseName).C(db.CollectionState).Find(findData).All(&planes)
+	err = session.DB(db.DatabaseName).C(db.CollectionState).Find(findData).All(&state)
+	err = session.DB(db.DatabaseName).C(db.CollectionState).Find(findData).All(&flight)
 
+	planes := mergeStatesAndFlights(state, flight)
 	return planes, err
 }
 
