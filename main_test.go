@@ -24,6 +24,14 @@ func TestOriginCountryHandler(t *testing.T) {
 	db := setupDB(t)
 	defer tearDownDB(t, db)
 
+	DBValues = Database{
+		HostURL:           "mongodb://localhost",
+		DatabaseName:      "testing",
+		CollectionState:   "testState",
+		CollectionAirport: "testAirport",
+		CollectionFlight:  "testFlight",
+	}
+
 	db.Init()
 	if db.Count(db.CollectionState) != 0 {
 		t.Error("Database not properly initialized, database count should be 0")
@@ -46,7 +54,7 @@ func TestOriginCountryHandler(t *testing.T) {
 	// Actual test of the handler in question
 	ts := httptest.NewServer(http.HandlerFunc(OriginCountryHandler))
 	defer ts.Close()
-	// WIP
+
 	resp, err := http.Get(ts.URL + "/C")
 
 	if resp.StatusCode != http.StatusOK {
