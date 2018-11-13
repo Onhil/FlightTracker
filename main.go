@@ -81,14 +81,18 @@ func ArrivalHandler(w http.ResponseWriter, r *http.Request) {
 func PlaneListHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
+	plason := []string{}
 	planes := []Planes{}
 	planes, err := DBValues.GetPlanes(nil)
-
-	for i := 0; i < len(planes); i++ {
-		planes = append(planes, planes[i].Icao24)
+	if err != nil {
+		http.Error(w, "Error getting planes", http.StatusBadRequest)
 	}
 
-	IcaoJSON, _ := json.Marshal(planes)
+	for i := 0; i < len(planes); i++ {
+		plason = append(plason, planes[i].Icao24)
+	}
+
+	IcaoJSON, err := json.Marshal(planes)
 	w.WriteHeader(http.StatusOK)
 	w.Write(IcaoJSON)
 }
