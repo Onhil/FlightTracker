@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/globalsign/mgo"
-	"github.com/globalsign/mgo/bson"
 )
 
 // Init checks if the Database actually works
@@ -100,8 +99,10 @@ func (db *Database) GetPlanes(findData map[string]interface{}) ([]Planes, error)
 	return planes, err
 }
 
-// GetAirport returns airport after ICAO code and true if in database, and an empty object and false if not
-func (db *Database) GetAirport(keyID string) (Airport, error) {
+// GetAirport accepts bson.M{} to find all Airports with choosen paramters
+// Example
+// FindData == bson.M{"country": "Italy"}
+func (db *Database) GetAirport(findData map[string]interface{}) ([]Airport, error) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -109,38 +110,9 @@ func (db *Database) GetAirport(keyID string) (Airport, error) {
 
 	defer session.Close()
 
-	port := Airport{}
-	err = session.DB(db.DatabaseName).C(db.CollectionAirport).Find(bson.M{"icao": keyID}).One(&port)
+	var port []Airport
+
+	err = session.DB(db.DatabaseName).C(db.CollectionAirport).Find(findData).One(&port)
 
 	return port, err
-}
-
-//GetAirportInCountry returns all airports in given country
-func (db *Database) GetAirportInCountry(keyID string) ([]Airport, error) {
-	session, err := mgo.Dial(db.HostURL)
-	if err != nil {
-		panic(err)
-	}
-
-	defer session.Close()
-
-	ports := []Airport{}
-	err = session.DB(db.DatabaseName).C(db.CollectionAirport).Find(bson.M{"country": keyID}).All(&ports)
-
-	return ports, err
-}
-
-//GetAllAirports returns all airports in database
-func (db *Database) GetAllAirports() ([]Airport, error) {
-	session, err := mgo.Dial(db.HostURL)
-	if err != nil {
-		panic(err)
-	}
-
-	defer session.Close()
-
-	ports := []Airport{}
-	err = session.DB(db.DatabaseName).C(db.CollectionAirport).Find(nil).All(&ports)
-
-	return ports, err
 }

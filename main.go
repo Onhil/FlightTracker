@@ -61,7 +61,7 @@ func DepartureHandler(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
 
 	depAirport := parts[len(parts)-1]
-	if data, err := DBValues.GetAirport(depAirport); err != nil {
+	if data, err := DBValues.GetPlanes(bson.M{"estDepartureAirport": depAirport}); err != nil {
 		http.Error(w, "Departure not in database", http.StatusBadRequest)
 	} else {
 		render.JSON(w, r, data)
@@ -76,7 +76,7 @@ func ArrivalHandler(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
 
 	arrAirport := parts[len(parts)-1]
-	if data, err := DBValues.GetAirport(arrAirport); err != nil {
+	if data, err := DBValues.GetPlanes(bson.M{"estarrivalaiport": arrAirport}); err != nil {
 		http.Error(w, "Arrival not in database", http.StatusBadRequest)
 	} else {
 		render.JSON(w, r, data)
