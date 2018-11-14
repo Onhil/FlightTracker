@@ -59,7 +59,7 @@ func updateFlights() {
 func updateAirports() {
 	var airports []Airport
 
-	if err := json.Unmarshal(body("https://raw.githubusercontent.com/Onhil/FlightTracker/master/Airports.json"), &airports); err != nil {
+	if err := json.Unmarshal(Body("https://raw.githubusercontent.com/Onhil/FlightTracker/master/Airports.json"), &airports); err != nil {
 		fmt.Println(err)
 	}
 	var documents []interface{}

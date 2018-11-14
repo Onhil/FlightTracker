@@ -390,7 +390,6 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-	Run()
 	router := mux.NewRouter()
 	router.HandleFunc("/flight-tracker", PlaneHandler)
 	router.HandleFunc("/flight-tracker/{country:.+}", OriginCountryHandler)

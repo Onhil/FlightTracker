@@ -23,35 +23,6 @@ var infowindow = new google.maps.InfoWindow();
 
 
 
-{{range $key, $value := .Airports}}
-
-var pos = {lat: {{$value.Latitude}}, lng: {{$value.Longitude}}};
-
-var img = {
-    url: "https://raw.githubusercontent.com/Onhil/FlightTracker/master/Pictures/Airport.png"
-}
-
-var marker = new google.maps.Marker({position: pos, icon: img, map: map});
-
-
-var name = {{$value.Name}}
-var city= {{$value.City}}
-var country = {{$value.Country}}
-var iata = {{$value.IATA}}
-var icao = {{$value.ICAO}}
-var timezone = {{$value.Timezone}}
-
-var content = "Name: " + name + '<br>' + "City: " + city + '<br>' + "Country: " + country + '<br>' +
-"IATA: " + iata + '<br>' + "ICAO: " + icao + '<br>' + "Timezone: " + timezone
-
-google.maps.event.addListener(marker, 'click', (function(marker, content, infowindow) {
-  return function(){
-  infowindow.setContent(content);
-  infowindow.open(map,marker);
-  }
-  })(marker, content, infowindow));
-
-{{end}}
 
 
 
@@ -90,6 +61,39 @@ google.maps.event.addListener(marker, 'click', (function(marker, content, infowi
   }
   })(marker, content, infowindow));
 
+
+{{end}}
+
+
+
+
+{{range $key, $value := .Airports}}
+
+var pos = {lat: {{$value.Latitude}}, lng: {{$value.Longitude}}};
+
+var img = {
+    url: "https://raw.githubusercontent.com/Onhil/FlightTracker/master/Pictures/Airport.png"
+}
+
+var marker = new google.maps.Marker({position: pos, icon: img, map: map});
+
+
+var name = {{$value.Name}}
+var city= {{$value.City}}
+var country = {{$value.Country}}
+var iata = {{$value.IATA}}
+var icao = {{$value.ICAO}}
+var timezone = {{$value.Timezone}}
+
+var content = "Name: " + name + '<br>' + "City: " + city + '<br>' + "Country: " + country + '<br>' +
+"IATA: " + iata + '<br>' + "ICAO: " + icao + '<br>' + "Timezone: " + timezone
+
+google.maps.event.addListener(marker, 'click', (function(marker, content, infowindow) {
+  return function(){
+  infowindow.setContent(content);
+  infowindow.open(map,marker);
+  }
+  })(marker, content, infowindow));
 
 {{end}}
 
