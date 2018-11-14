@@ -138,37 +138,51 @@ func mergeStatesAndFlights(s []State, f []Flight) []Planes {
 	var p Planes
 	// Adds j from for loop f that has the same callsing as s
 	var fCall []int
-
 	for i := range s {
-
-		if s[i].Callsign != "" {
-			for j := range f {
-				// If s and f callsign is the same it merges them into planes
-				if s[i].Callsign == f[j].Callsign {
-					p = Planes{s[i], f[j]}
-					planes = append(planes, p)
-					fCall = append(fCall, j)
+		// In case f is empty it should still be able to append s to planes
+		if f != nil {
+			if s[i].Callsign != "" {
+				for j := range f {
+					// If s and f callsign is the same it merges them into planes
+					if s[i].Callsign == f[j].Callsign {
+						p = Planes{s[i], f[j]}
+						planes = append(planes, p)
+						fCall = append(fCall, j)
+					}
 				}
+				// If s callsign is empty add it seperatly to planes
+			} else {
+				p = Planes{s[i], Flight{}}
+				planes = append(planes, p)
 			}
-			// If s callsign is empty add it seperatly to planes
 		} else {
 			p = Planes{s[i], Flight{}}
 			planes = append(planes, p)
 		}
-	}
 
-	for i := range f {
-		b := false
-		// Checks wether or not index has been used before
-		for j := range fCall {
-			if i == fCall[j] {
-				b = true
-			}
-		}
-		// If index have not been used it adds flight to planes
-		if !b {
+	}
+	// In case s is empty it should still be able to append f to planes
+	if s == nil {
+		for i := range f {
 			p = Planes{State{}, f[i]}
 			planes = append(planes, p)
+		}
+	}
+	// if fCall is empty it should not need enter the for loop
+	if fCall != nil {
+		for i := range f {
+			b := false
+			// Checks wether or not index has been used before
+			for j := range fCall {
+				if i == fCall[j] {
+					b = true
+				}
+			}
+			// If index have not been used it adds flight to planes
+			if !b {
+				p = Planes{State{}, f[i]}
+				planes = append(planes, p)
+			}
 		}
 	}
 	return planes

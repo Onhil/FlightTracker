@@ -95,13 +95,13 @@ func TestGetAirport(t *testing.T) {
 
 	FindData := bson.M{"country": "Mekka"}
 
-		a, err := db.GetAirport(FindData)
-		if err != nil {
-			t.Errorf("Error in retrival of Country, %s", err)
-		}
+	a, err := db.GetAirport(FindData)
+	if err != nil {
+		t.Errorf("Error in retrival of Country, %s", err)
+	}
 
-		if a[0] != testAirport1 {
-			t.Error("Incorrect airport was returned")
+	if a[0] != testAirport1 {
+		t.Error("Incorrect airport was returned")
 	}
 }
 
@@ -117,7 +117,7 @@ func TestGetPlanes(t *testing.T) {
 	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
 	var testStateArray []interface{}
 	testStateArray = append(testStateArray, testState)
-
+	p := Planes{testState, Flight{}}
 	err := db.Add(testStateArray, db.CollectionState)
 	if err != nil {
 		t.Error(err)
@@ -125,20 +125,16 @@ func TestGetPlanes(t *testing.T) {
 	if db.Count(db.CollectionState) != 1 {
 		t.Error("Database not properly initialized, database count should be 1")
 	}
-	// "OriginCountry" : "C"
+	FindData := bson.M{"origincountry": "C"}
 
-	var FindData map[string]interface{}
-
-	FindData = make(map[string]interface{})
-	FindData["OriginCountry"] = "C"
-/* // TODO: Fix this test
 	s, err := db.GetPlanes(FindData)
 	if err != nil {
 		t.Errorf("Error in retrival of OriginCountry, %s", err)
 	}
-	if s[0].State != testState {
+
+	if s[0] != p {
 		t.Error("Incorrect State were returned")
-	}*/
+	}
 }
 
 /*
