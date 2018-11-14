@@ -61,7 +61,7 @@ func DepartureHandler(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
 
 	depAirport := parts[len(parts)-1]
-	if data, err := DBValues.GetPlanes(bson.M{"estDepartureAirport": depAirport}); err != nil {
+	if data, err := DBValues.GetPlanes(bson.M{"estdepartureairport": depAirport}); err != nil {
 		http.Error(w, "Departure not in database", http.StatusBadRequest)
 	} else {
 		render.JSON(w, r, data)
@@ -197,7 +197,7 @@ func CountryHandler(w http.ResponseWriter, r *http.Request) {
 
 	country := parts[len(parts)-1]
 
-	plane, err := DBValues.GetState(bson.M{"OriginCountry": country})
+	plane, err := DBValues.GetState(bson.M{"origincountry": country})
 	if err != nil {
 		http.Error(w, "Unable to find any Planes with given OriginCountry", http.StatusBadRequest)
 		return

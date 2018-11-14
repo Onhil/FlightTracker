@@ -85,7 +85,7 @@ func (db *Database) Count(collN string) int {
 
 // Getflight accepts bson.M{} to find all flights with choosen paramaters
 // Example
-// findData == bson.M{"origincountry": "Italy"}
+// findData == bson.M{"estarrivalairport": "ENFL"}
 func (db *Database) Getflight(findData bson.M) ([]Flight, error) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
@@ -102,7 +102,7 @@ func (db *Database) Getflight(findData bson.M) ([]Flight, error) {
 
 // GetState accepts bson.M{} to find all flights with choosen paramaters
 // Example
-// findData == bson.M{"Callsign": "<insert callsign here>"}
+// findData == bson.M{"callsign": "<insert callsign here>"}
 func (db *Database) GetState(findData bson.M) ([]State, error) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
@@ -136,6 +136,9 @@ func (db *Database) GetAirport(findData bson.M) ([]Airport, error) {
 	return port, err
 }
 
+// GetPlanes accepts bson.M{} to find all flights with choosen paramaters
+// Example
+// findData == bson.M{"origincountry": "Italy"}
 func (db *Database) GetPlanes(find bson.M) ([]Planes, error) {
 	var s []State
 	var f []Flight
