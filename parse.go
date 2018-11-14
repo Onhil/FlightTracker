@@ -214,11 +214,11 @@ func (a *Airport) ParseAirport(data []byte) error {
 	if v[5] != nil {
 		a.ICAO = v[5].(string) //Null
 	}
-
+	fmt.Println(a.Name)
 	a.Latitude = v[6].(float64)
 	a.Longitude = v[7].(float64)
 	a.Altitude = v[8].(float64)
-	a.Timezone = v[9].(float64)
+	a.Timezone = v[9].(string)
 	a.DST = v[10].(string)
 	a.TzDatabaseTimezone = v[11].(string)
 	a.Type = v[12].(string)

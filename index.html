@@ -33,7 +33,16 @@ var img = {
 
 var marker = new google.maps.Marker({position: pos, icon: img, map: map});
 
-var content = "Airport"
+
+var name = {{$value.Name}}
+var city= {{$value.City}}
+var country = {{$value.Country}}
+var iata = {{$value.IATA}}
+var icao = {{$value.ICAO}}
+var timezone = {{$value.Timezone}}
+
+var content = "Name: " + name + '<br>' + "City: " + city + '<br>' + "Country: " + country + '<br>' +
+"IATA: " + iata + '<br>' + "ICAO: " + icao + '<br>' + "Timezone: " + timezone
 
 google.maps.event.addListener(marker, 'click', (function(marker, content, infowindow) {
   return function(){

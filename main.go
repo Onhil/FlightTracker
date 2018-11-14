@@ -19,15 +19,20 @@ import (
 func PlaneHandler(w http.ResponseWriter, r *http.Request) {
 
 	var pllanes []Planes
+	var airrports []Airport
+
 	pllanes, _ = DBValues.GetPlanes(nil)
+	airrports, _ = DBValues.GetAirport(nil)
 
 	planes := make(map[int]Planes)
 	airports := make(map[int]Airport)
 
-	airports[0] = Airport{Latitude: 0, Longitude: 0}
-
 	for i := 0; i < len(pllanes); i++ {
 		planes[i] = pllanes[i]
+	}
+
+	for i := 0; i < len(airrports); i++ {
+		airports[i] = airrports[i]
 	}
 
 	p := Markers{Title: "Plz Work", Planes: planes, Airports: airports}
@@ -385,7 +390,7 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-
+	Run()
 	router := mux.NewRouter()
 	router.HandleFunc("/flight-tracker", PlaneHandler)
 	router.HandleFunc("/flight-tracker/{country:.+}", OriginCountryHandler)

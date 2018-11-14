@@ -53,20 +53,20 @@ type Planes struct {
 
 //Airport is a struct that has data regarding the airports in the world
 type Airport struct {
-	ID                 int     `json:"ID"`                    //Unique OpenFlights identifier for this airport
-	Name               string  `json:"Name"`                  //Name of airport. May or may nor contain the City name.
-	City               string  `json:"City"`                  //Main city served by airport. May be spelled differently from Name.
-	Country            string  `json:"Country"`               //Country or territory where airport is located.
-	IATA               string  `json:"IATA"`                  //3-letter IATA code. Null if not assigned/unknown
-	ICAO               string  `json:"ICAO"`                  //4-letter ICAO code. Null if not assigned.
-	Latitude           float64 `json:"Latitude"`              //Decimal degrees, usally to six significant digits. Negative is West, positive is East.
-	Longitude          float64 `json:"Longitude"`             //Decimal degrees, usally to six significant digits. Negative is West, positive is East.
-	Altitude           float64 `json:"Altitude"`              //In feet.
-	Timezone           float64 `json:"Timezone"`              //Hours offset from UTC. Fractional hours are expressed as decimals, eg. India is 5.5.
-	DST                string  `json:"DST"`                   //Daylight savings time. One of E (Europe), A (US/Canada), S (Sout America), O (Australia), Z (New Zealand), N (None) or U (Unknown)
+	ID                 int     `json:"ID"`                   //Unique OpenFlights identifier for this airport
+	Name               string  `json:"Name"`                 //Name of airport. May or may nor contain the City name.
+	City               string  `json:"City"`                 //Main city served by airport. May be spelled differently from Name.
+	Country            string  `json:"Country"`              //Country or territory where airport is located.
+	IATA               string  `json:"IATA"`                 //3-letter IATA code. Null if not assigned/unknown
+	ICAO               string  `json:"ICAO"`                 //4-letter ICAO code. Null if not assigned.
+	Latitude           float64 `json:"Latitude"`             //Decimal degrees, usally to six significant digits. Negative is West, positive is East.
+	Longitude          float64 `json:"Longitude"`            //Decimal degrees, usally to six significant digits. Negative is West, positive is East.
+	Altitude           float64 `json:"Altitude"`             //In feet.
+	Timezone           string  `json:"Timezone"`             //Hours offset from UTC. Fractional hours are expressed as decimals, eg. India is 5.5.
+	DST                string  `json:"DST"`                  //Daylight savings time. One of E (Europe), A (US/Canada), S (Sout America), O (Australia), Z (New Zealand), N (None) or U (Unknown)
 	TzDatabaseTimezone string  `json:"Tz_Database_Timezone"` //Timezone in "tz" (Olson) format, eg. "America/Los_Angeles".
-	Type               string  `json:"Type"`                  //Type of airport. only type=airport included.
-	Source             string  `json:"Source"`                //Source of this data. "OurAirports" is the only source
+	Type               string  `json:"Type"`                 //Type of airport. only type=airport included.
+	Source             string  `json:"Source"`               //Source of this data. "OurAirports" is the only source
 }
 
 // AirportJSON holds the json for Airport
