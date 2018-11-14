@@ -87,7 +87,7 @@ func TestGetPlanes(t *testing.T) {
 
 	FindData = make(map[string]interface{})
 	FindData["OriginCountry"] = "C"
-/*
+/* // TODO: Fix this test
 	s, err := db.GetPlanes(FindData)
 	if err != nil {
 		t.Errorf("Error in retrival of OriginCountry, %s", err)
@@ -127,7 +127,7 @@ func TestGetAirport(t *testing.T) {
 
 	FindData = make(map[string]interface{})
 	FindData["Country"] = "Mekka"
-/*
+/* // TODO: Fix this test
 	a, err := db.GetAirport(FindData)
 	if err != nil {
 		t.Errorf("Error in retrival of Country, %s", err)

@@ -220,7 +220,7 @@ func (a *Airport) ParseAirport(data []byte) error {
 	a.Altitude = v[8].(float64)
 	a.Timezone = v[9].(float64)
 	a.DST = v[10].(string)
-	a.TzDatabaseTimeZone = v[11].(string)
+	a.TzDatabaseTimezone = v[11].(string)
 	a.Type = v[12].(string)
 	a.Source = v[13].(string)
 
