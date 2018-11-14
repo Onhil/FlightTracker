@@ -85,6 +85,7 @@ func PlaneListHandler(w http.ResponseWriter, r *http.Request) {
 	planes, err := DBValues.GetState(nil)
 	if err != nil {
 		http.Error(w, "Error getting planes", http.StatusBadRequest)
+		return
 	}
 
 	for i := 0; i < len(planes); i++ {
@@ -94,6 +95,7 @@ func PlaneListHandler(w http.ResponseWriter, r *http.Request) {
 	IcaoJSON, err := json.Marshal(planes)
 	if err != nil {
 		http.Error(w, "Error parsing planes", http.StatusBadRequest)
+		return
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(IcaoJSON)
@@ -110,11 +112,13 @@ func PlaneInfoHandler(w http.ResponseWriter, r *http.Request) {
 	temp, err := DBValues.GetState(bson.M{"icao24": icao24})
 	if err != nil {
 		http.Error(w, "Error getting plane info", http.StatusBadRequest)
+		return
 	}
 
 	PlaneJSON, err := json.Marshal(temp)
 	if err != nil {
 		http.Error(w, "Error parsing plane info", http.StatusBadRequest)
+		return
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(PlaneJSON)
@@ -132,6 +136,7 @@ func PlaneFieldHandler(w http.ResponseWriter, r *http.Request) {
 	temp, err := DBValues.GetState(bson.M{"icao24": icao24})
 	if err != nil {
 		http.Error(w, "Error getting plane info", http.StatusBadRequest)
+		return
 	}
 
 	plane := temp[0]
@@ -165,10 +170,12 @@ func PlaneFieldHandler(w http.ResponseWriter, r *http.Request) {
 		Response = plane.Spi
 	default:
 		http.Error(w, "Error no such field", http.StatusBadRequest)
+		return
 	}
 	FieldJSON, err := json.Marshal(Response)
 	if err != nil {
 		http.Error(w, "Error parsing field", http.StatusBadRequest)
+		return
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(FieldJSON)
@@ -181,7 +188,31 @@ func PlaneMapHandler(w http.ResponseWriter, r *http.Request) {
 
 // CountryHandler Returns all planes from a country
 func CountryHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 
+	parts := strings.Split(r.URL.Path, "/")
+
+	country := parts[len(parts)-1]
+
+	plane, err := DBValues.GetState(bson.M{"OriginCountry": country})
+	if err != nil {
+		http.Error(w, "Unable to find any Planes with given OriginCountry", http.StatusBadRequest)
+		return
+	}
+	PlaneNames := []string{}
+
+	for i := 0; i < len(plane); i++ {
+		PlaneNames = append(PlaneNames, plane[i].Icao24)
+	}
+
+	portJSON, err := json.Marshal(PlaneNames)
+	if err != nil {
+		http.Error(w, "Unable to parse the Plane names", http.StatusBadRequest)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(portJSON)
 }
 
 // CountryMapHandler Shows all planes from country on the map
@@ -191,7 +222,29 @@ func CountryMapHandler(w http.ResponseWriter, r *http.Request) {
 
 // AirportListHandler Lists all airports by ICAO
 func AirportListHandler(w http.ResponseWriter, r *http.Request) {
+	parts := strings.Split(r.URL.Path, "/")
 
+	icao := parts[len(parts)-1]
+
+	airports, err := DBValues.GetAirport(bson.M{"icao": icao})
+	if err != nil {
+		http.Error(w, "Unable to find any Airports with the given ICAO", http.StatusBadRequest)
+		return
+	}
+	AirportIcao := []string{}
+
+	for i := 0; i < len(airports); i++ {
+		AirportIcao = append(AirportIcao, airports[i].ICAO)
+	}
+
+	portJSON, err := json.Marshal(AirportIcao)
+	if err != nil {
+		http.Error(w, "Unable to parse the Airport names", http.StatusBadRequest)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(portJSON)
 }
 
 // AirportInfoHandler Returns information about the airport and the ICAO24 of all planes that arrives and depart from it
@@ -339,15 +392,15 @@ func main() {
 	router.HandleFunc("/flight-tracker/{country:.+}", OriginCountryHandler)
 	router.HandleFunc("/flight-tracker/plane", PlaneListHandler)
 	router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]+}", PlaneInfoHandler)
-	/*router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]+}/{field:[A-Za-z0-9]+}", PlaneFieldHandler)
-	router.HandleFunc("/flight-tracker/plane/map/{icao24:[A-Za-z0-9]+}", PlaneMapHandler)
+	router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]+}/{field:[A-Za-z0-9]+}", PlaneFieldHandler)
+	//router.HandleFunc("/flight-tracker/plane/map/{icao24:[A-Za-z0-9]+}", PlaneMapHandler)
 	router.HandleFunc("/flight-tracker/plane/country/{country:.+}", CountryHandler)
-	router.HandleFunc("/flight-tracker/plane/country/map/{country:.+}", CountryMapHandler)
+	//router.HandleFunc("/flight-tracker/plane/country/map/{country:.+}", CountryMapHandler)
 	router.HandleFunc("/flight-tracker/airport", AirportListHandler)
 	router.HandleFunc("/flight-tracker/airport/{icao:[A-Z]{4}}", AirportInfoHandler)
 	router.HandleFunc("/flight-tracker/airport/{icao:[A-Z]{4}}/{field:[A-Za-z0-9]+}", AirportFieldHandler)
 	router.HandleFunc("/flight-tracker/airport/country", AirportCountryHandler)
-	router.HandleFunc("/flight-tracker/airport/country/{country:.+}", AirportInCountryHandler)*/
+	router.HandleFunc("/flight-tracker/airport/country/{country:.+}", AirportInCountryHandler)
 	router.HandleFunc("/flight-tracker/{departing:[A-Z]{4}}", DepartureHandler)
 	router.HandleFunc("/flight-tracker/{arriving:[A-Z]{4}}", ArrivalHandler)
 	// Handle functions
