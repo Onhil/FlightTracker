@@ -22,12 +22,15 @@ func PlaneHandler(w http.ResponseWriter, r *http.Request) {
 	pllanes, _ = DBValues.GetPlanes(nil)
 
 	planes := make(map[int]Planes)
+	airports := make(map[int]Airport)
+
+	airports[0] = Airport{Latitude: 0, Longitude: 0}
 
 	for i := 0; i < len(pllanes); i++ {
 		planes[i] = pllanes[i]
 	}
 
-	p := Markers{Title: "Plz Work", Planes: planes}
+	p := Markers{Title: "Plz Work", Planes: planes, Airports: airports}
 
 	t, err := template.ParseFiles("index.html")
 	if err != nil {
@@ -356,7 +359,7 @@ func AirportInCountryHandler(w http.ResponseWriter, r *http.Request) {
 	AirportNames := []string{}
 
 	for i := 0; i < len(airports); i++ {
-		AirportNames = append(AirportNames, airports[i].Name)
+		AirportNames = append(AirportNames, airports[i].ICAO)
 	}
 
 	portJSON, err := json.Marshal(AirportNames)
