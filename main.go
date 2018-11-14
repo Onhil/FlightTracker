@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -14,40 +13,6 @@ import (
 )
 
 // Functions
-
-// PlaneHandler is the function which handles planes and displays a google map, it is currently in an early stage of development.
-func PlaneHandler(w http.ResponseWriter, r *http.Request) {
-
-	var pllanes []Planes
-	var airrports []Airport
-
-	pllanes, _ = DBValues.GetPlanes(nil)
-	airrports, _ = DBValues.GetAirport(nil)
-
-	planes := make(map[int]Planes)
-	airports := make(map[int]Airport)
-
-	for i := 0; i < len(pllanes); i++ {
-		planes[i] = pllanes[i]
-	}
-
-	for i := 0; i < len(airrports); i++ {
-		airports[i] = airrports[i]
-	}
-
-	p := Markers{Title: "Plz Work", Planes: planes, Airports: airports}
-
-	t, err := template.ParseFiles("index.html")
-	if err != nil {
-		// TODO better error
-		http.Error(w, "Error in parsing index", http.StatusBadRequest)
-	}
-	err = t.Execute(w, p)
-	if err != nil {
-		// TODO better error
-		http.Error(w, "Error in executing", http.StatusBadRequest)
-	}
-}
 
 // OriginCountryHandler handles origin country
 func OriginCountryHandler(w http.ResponseWriter, r *http.Request) {
@@ -189,11 +154,6 @@ func PlaneFieldHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(FieldJSON)
 }
 
-// PlaneMapHandler Shows the plane on the map
-func PlaneMapHandler(w http.ResponseWriter, r *http.Request) {
-
-}
-
 // CountryHandler Returns all planes from a country
 func CountryHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -221,11 +181,6 @@ func CountryHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(portJSON)
-}
-
-// CountryMapHandler Shows all planes from country on the map
-func CountryMapHandler(w http.ResponseWriter, r *http.Request) {
-
 }
 
 // AirportListHandler Lists all airports by ICAO
