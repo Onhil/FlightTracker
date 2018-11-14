@@ -103,6 +103,24 @@ func (db *Database) GetPlanes(findData bson.M) ([]Planes, error) {
 	return planes, err
 }
 
+// GetState accepts bson.M{} to find all flights with choosen paramaters
+// Example
+// findData == bson.M{"Callsign": "<insert callsign here>"}
+func (db *Database) GetState(findData bson.M) ([]State, error) {
+	session, err := mgo.Dial(db.HostURL)
+	if err != nil {
+		panic(err)
+	}
+
+	defer session.Close()
+
+	var state []State
+
+	err = session.DB(db.DatabaseName).C(db.CollectionState).Find(findData).All(&state)
+
+	return state, err
+}
+
 // GetAirport accepts bson.M{} to find all Airports with choosen paramters
 // Example
 // FindData == bson.M{"country": "Italy"}

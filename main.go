@@ -82,7 +82,6 @@ func PlaneListHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	plason := []string{}
-	planes := []Planes{}
 	planes, err := DBValues.GetPlanes(nil)
 	if err != nil {
 		http.Error(w, "Error getting planes", http.StatusBadRequest)
@@ -93,19 +92,86 @@ func PlaneListHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	IcaoJSON, err := json.Marshal(planes)
+	if err != nil {
+		http.Error(w, "Error getting planes", http.StatusBadRequest)
+	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(IcaoJSON)
 }
 
-/*
 // PlaneInfoHandler Returns information about plane
 func PlaneInfoHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 
+	parts := strings.Split(r.URL.Path, "/")
+
+	icao24 := parts[len(parts)-1]
+
+	temp, err := DBValues.GetPlanes(bson.M{"icao24": icao24})
+	if err != nil {
+		http.Error(w, "Error getting plane info", http.StatusBadRequest)
+	}
+
+	PlaneJSON, err := json.Marshal(temp)
+	if err != nil {
+		http.Error(w, "Error parsing plane info", http.StatusBadRequest)
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(PlaneJSON)
 }
 
 // PlaneFieldHandler Returns information about a certain field for the plane
 func PlaneFieldHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 
+	parts := strings.Split(r.URL.Path, "/")
+
+	icao24 := parts[len(parts)-2]
+	field := parts[len(parts)-1]
+
+	temp, err := DBValues.GetState(bson.M{"icao24": icao24})
+	if err != nil {
+		http.Error(w, "Error getting plane info", http.StatusBadRequest)
+	}
+
+	plane := temp[0]
+
+	var Response interface{}
+
+	switch field {
+	case "Callsign":
+		Response = plane.Callsign
+	case "OriginCountry":
+		Response = plane.OriginCountry
+	case "Longitude":
+		Response = plane.Longitude
+	case "Latitude":
+		Response = plane.Latitude
+	case "BaroAltitude":
+		Response = plane.BaroAltitude
+	case "OnGround":
+		Response = plane.OnGround
+	case "Velocity":
+		Response = plane.Velocity
+	case "TrueTrack":
+		Response = plane.TrueTrack
+	case "VerticalRate":
+		Response = plane.VerticalRate
+	case "GeoAltitude":
+		Response = plane.GeoAltitude
+	case "Squawk":
+		Response = plane.Squawk
+	case "Spi":
+		Response = plane.Spi
+	default:
+		http.Error(w, "Error no such field", http.StatusBadRequest)
+	}
+	FieldJSON, err := json.Marshal(Response)
+	if err != nil {
+		http.Error(w, "Error parsing plane info", http.StatusBadRequest)
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(FieldJSON)
 }
 
 // PlaneMapHandler Shows the plane on the map
@@ -147,7 +213,7 @@ func AirportCountryHandler(w http.ResponseWriter, r *http.Request) {
 func AirportInCountryHandler(w http.ResponseWriter, r *http.Request) {
 
 }
-*/
+
 // main
 func main() {
 
@@ -170,8 +236,8 @@ func main() {
 	router.HandleFunc("/flight-tracker", PlaneHandler)
 	router.HandleFunc("/flight-tracker/{country:.+}", OriginCountryHandler)
 	router.HandleFunc("/flight-tracker/plane", PlaneListHandler)
-	/*router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]+}", PlaneInfoHandler)
-	router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]}/{field:[A-Za-z0-9]+}", PlaneFieldHandler)
+	router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]+}", PlaneInfoHandler)
+	/*router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]+}/{field:[A-Za-z0-9]+}", PlaneFieldHandler)
 	router.HandleFunc("/flight-tracker/plane/map/{icao24:[A-Za-z0-9]+}", PlaneMapHandler)
 	router.HandleFunc("/flight-tracker/plane/country/{country:.+}", CountryHandler)
 	router.HandleFunc("/flight-tracker/plane/country/map/{country:.+}", CountryMapHandler)
