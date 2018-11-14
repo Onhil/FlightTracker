@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/globalsign/mgo"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/globalsign/mgo"
 )
 
 func TestPlaneHandler(t *testing.T) {
@@ -245,29 +246,28 @@ func TestPlaneFieldHandler(t *testing.T) {
 	defer tearDownDB(t, &DBValues)
 
 	DBValues.Init()
-	if DBValues.Count(DBValues.CollectionFlight) != 0 {
+	if DBValues.Count(DBValues.CollectionState) != 0 {
 		t.Error("Database not properly initialized, database count should be 0")
 	}
 
 	// Adds element
-	testFlight := Flight{"A", 1, "B", 1, "Reku", "C"}
+	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
 	var testStateArray []interface{}
-	testStateArray = append(testStateArray, testFlight)
+	testStateArray = append(testStateArray, testState)
 
-	err = DBValues.Add(testStateArray, DBValues.CollectionFlight)
+	err = DBValues.Add(testStateArray, DBValues.CollectionState)
 	if err != nil {
 		t.Error(err)
 	}
 
-	if DBValues.Count(DBValues.CollectionFlight) != 1 {
+	if DBValues.Count(DBValues.CollectionState) != 1 {
 		t.Error("Database not properly initialized, database count should be 1")
 	}
 
 	// Actual test
 	ts := httptest.NewServer(http.HandlerFunc(PlaneFieldHandler))
 	defer ts.Close()
-	/* // TODO: Fix this!
-	resp, err := http.Get(ts.URL + "/Reku/Callsign")
+	resp, err := http.Get(ts.URL + "/A/Callsign")
 	if resp.StatusCode != http.StatusOK {
 		t.Errorf("Expected StatusCode %d, received %d", http.StatusOK, resp.StatusCode)
 	}
@@ -276,14 +276,14 @@ func TestPlaneFieldHandler(t *testing.T) {
 		t.Error(err)
 	}
 
-	resp, err = http.Get(ts.URL + "/Reku/rattattat")
+	resp, err = http.Get(ts.URL + "/A/rattattat")
 	if resp.StatusCode != http.StatusBadRequest {
 		t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, resp.StatusCode)
 	}
 
 	if err != nil {
 		t.Error(err)
-	}*/
+	}
 }
 
 func TestPlaneMapHandler(t *testing.T) {
