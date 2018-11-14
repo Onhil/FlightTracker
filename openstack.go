@@ -28,7 +28,7 @@ func Run() {
 func updateStates() {
 	var state States
 
-	if err := json.Unmarshal(body("https://opensky-network.org/api/states/all"), &state); err != nil {
+	if err := json.Unmarshal(Body("https://opensky-network.org/api/states/all"), &state); err != nil {
 		fmt.Println(err)
 	}
 
@@ -43,7 +43,7 @@ func updateStates() {
 func updateFlights() {
 	var flights []Flight
 
-	if err := json.Unmarshal(body(timeFlights()), &flights); err != nil {
+	if err := json.Unmarshal(Body(timeFlights()), &flights); err != nil {
 		fmt.Println(err)
 	}
 
@@ -71,7 +71,7 @@ func updateAirports() {
 	}
 }
 
-func body(url string) []byte {
+func Body(url string) []byte {
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Println(err)

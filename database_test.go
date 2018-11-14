@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/globalsign/mgo"
-	//"github.com/globalsign/mgo/bson"
+	"github.com/globalsign/mgo/bson"
 )
 
 func setupDB(t *testing.T) *Database {
@@ -61,40 +61,12 @@ func TestAdd(t *testing.T) {
 	}
 }
 
-func TestGetPlanes(t *testing.T) {
-	db := setupDB(t)
-	defer tearDownDB(t, db)
+func TestGetFlight(t *testing.T) {
 
-	db.Init()
-	if db.Count(db.CollectionState) != 0 {
-		t.Error("Database not properly initialized, database count should be 0")
-	}
+}
 
-	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
-	var testStateArray []interface{}
-	testStateArray = append(testStateArray, testState)
+func TestGetState(t *testing.T) {
 
-	err := db.Add(testStateArray, db.CollectionState)
-	if err != nil {
-		t.Error(err)
-	}
-	if db.Count(db.CollectionState) != 1 {
-		t.Error("Database not properly initialized, database count should be 1")
-	}
-	// "OriginCountry" : "C"
-
-	var FindData map[string]interface{}
-
-	FindData = make(map[string]interface{})
-	FindData["OriginCountry"] = "C"
-/* // TODO: Fix this test
-	s, err := db.GetPlanes(FindData)
-	if err != nil {
-		t.Errorf("Error in retrival of OriginCountry, %s", err)
-	}
-	if s[0].State != testState {
-		t.Error("Incorrect State were returned")
-	}*/
 }
 
 func TestGetAirport(t *testing.T) {
@@ -121,13 +93,8 @@ func TestGetAirport(t *testing.T) {
 		t.Error("There should not have been any errors!")
 	}
 
-	// FindData := bson.M{"country":"Mekka"}
+	FindData := bson.M{"country": "Mekka"}
 
-	var FindData map[string]interface{}
-
-	FindData = make(map[string]interface{})
-	FindData["Country"] = "Mekka"
-/* // TODO: Fix this test
 	a, err := db.GetAirport(FindData)
 	if err != nil {
 		t.Errorf("Error in retrival of Country, %s", err)
@@ -135,7 +102,39 @@ func TestGetAirport(t *testing.T) {
 
 	if a[0] != testAirport1 {
 		t.Error("Incorrect airport was returned")
-	}*/
+	}
+}
+
+func TestGetPlanes(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
+
+	db.Init()
+	if db.Count(db.CollectionState) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	var testStateArray []interface{}
+	testStateArray = append(testStateArray, testState)
+	p := Planes{testState, Flight{}}
+	err := db.Add(testStateArray, db.CollectionState)
+	if err != nil {
+		t.Error(err)
+	}
+	if db.Count(db.CollectionState) != 1 {
+		t.Error("Database not properly initialized, database count should be 1")
+	}
+	FindData := bson.M{"origincountry": "C"}
+
+	s, err := db.GetPlanes(FindData)
+	if err != nil {
+		t.Errorf("Error in retrival of OriginCountry, %s", err)
+	}
+
+	if s[0] != p {
+		t.Error("Incorrect State were returned")
+	}
 }
 
 /*
