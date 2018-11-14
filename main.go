@@ -85,8 +85,7 @@ func PlaneListHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	plason := []string{}
-	planes := []Planes{}
-	planes, err := DBValues.GetPlanes(nil)
+	planes, err := DBValues.GetState(nil)
 	if err != nil {
 		http.Error(w, "Error getting planes", http.StatusBadRequest)
 	}
@@ -96,18 +95,86 @@ func PlaneListHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	IcaoJSON, err := json.Marshal(planes)
+	if err != nil {
+		http.Error(w, "Error parsing planes", http.StatusBadRequest)
+	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(IcaoJSON)
 }
 
 // PlaneInfoHandler Returns information about plane
 func PlaneInfoHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 
+	parts := strings.Split(r.URL.Path, "/")
+
+	icao24 := parts[len(parts)-1]
+
+	temp, err := DBValues.GetState(bson.M{"icao24": icao24})
+	if err != nil {
+		http.Error(w, "Error getting plane info", http.StatusBadRequest)
+	}
+
+	PlaneJSON, err := json.Marshal(temp)
+	if err != nil {
+		http.Error(w, "Error parsing plane info", http.StatusBadRequest)
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(PlaneJSON)
 }
 
 // PlaneFieldHandler Returns information about a certain field for the plane
 func PlaneFieldHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 
+	parts := strings.Split(r.URL.Path, "/")
+
+	icao24 := parts[len(parts)-2]
+	field := parts[len(parts)-1]
+
+	temp, err := DBValues.GetState(bson.M{"icao24": icao24})
+	if err != nil {
+		http.Error(w, "Error getting plane info", http.StatusBadRequest)
+	}
+
+	plane := temp[0]
+
+	var Response interface{}
+
+	switch field {
+	case "Callsign":
+		Response = plane.Callsign
+	case "OriginCountry":
+		Response = plane.OriginCountry
+	case "Longitude":
+		Response = plane.Longitude
+	case "Latitude":
+		Response = plane.Latitude
+	case "BaroAltitude":
+		Response = plane.BaroAltitude
+	case "OnGround":
+		Response = plane.OnGround
+	case "Velocity":
+		Response = plane.Velocity
+	case "TrueTrack":
+		Response = plane.TrueTrack
+	case "VerticalRate":
+		Response = plane.VerticalRate
+	case "GeoAltitude":
+		Response = plane.GeoAltitude
+	case "Squawk":
+		Response = plane.Squawk
+	case "Spi":
+		Response = plane.Spi
+	default:
+		http.Error(w, "Error no such field", http.StatusBadRequest)
+	}
+	FieldJSON, err := json.Marshal(Response)
+	if err != nil {
+		http.Error(w, "Error parsing field", http.StatusBadRequest)
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(FieldJSON)
 }
 
 // PlaneMapHandler Shows the plane on the map
@@ -132,12 +199,85 @@ func AirportListHandler(w http.ResponseWriter, r *http.Request) {
 
 // AirportInfoHandler Returns information about the airport and the ICAO24 of all planes that arrives and depart from it
 func AirportInfoHandler(w http.ResponseWriter, r *http.Request) {
+	parts := strings.Split(r.URL.Path, "/")
 
+	icao := parts[len(parts)-1]
+
+	airport, err := DBValues.GetAirport(bson.M{"icao": icao})
+	if err != nil {
+		http.Error(w, "Unable to find any Airports with given ICAO", http.StatusBadRequest)
+		return
+	}
+
+	port := airport[0] //Convert array to single airport, in case of more than one airport with the ICAO which should not happen
+
+	portJSON, err := json.Marshal(port)
+	if err != nil {
+		http.Error(w, "Unable to parse the Airport", http.StatusBadRequest)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(portJSON)
 }
 
 // AirportFieldHandler Returns the field information for the airport
 func AirportFieldHandler(w http.ResponseWriter, r *http.Request) {
+	parts := strings.Split(r.URL.Path, "/")
 
+	icao := parts[len(parts)-2]
+	field := parts[len(parts)-1]
+
+	airport, err := DBValues.GetAirport(bson.M{"icao": icao})
+	if err != nil {
+		http.Error(w, "Unable to find any Airports with given ICAO", http.StatusBadRequest)
+		return
+	}
+
+	port := airport[0] //Convert array to single airport, in case of more than one airport with the ICAO which should not happen
+
+	var Response interface{}
+
+	switch field {
+	case "ID":
+		Response = port.ID
+	case "Name":
+		Response = port.Name
+	case "City":
+		Response = port.City
+	case "Country":
+		Response = port.Country
+	case "IATA":
+		Response = port.IATA
+	case "Latitude":
+		Response = port.Latitude
+	case "Longitude":
+		Response = port.Longitude
+	case "Altitude":
+		Response = port.Altitude
+	case "Timezone":
+		Response = port.Timezone
+	case "DST":
+		Response = port.DST
+	case "Tz_Database_Timezone":
+		Response = port.TzDatabaseTimezone
+	case "Type":
+		Response = port.Type
+	case "Source":
+		Response = port.Source
+	default:
+		http.Error(w, "Field is not included in Airport!", http.StatusBadRequest)
+		return
+	}
+
+	portJSON, err := json.Marshal(Response)
+	if err != nil {
+		http.Error(w, "Unable to parse the Airport", http.StatusBadRequest)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(portJSON)
 }
 
 // AirportCountryHandler Returns all countries with an airport
@@ -160,7 +300,7 @@ func AirportInCountryHandler(w http.ResponseWriter, r *http.Request) {
 
 	airports, err := DBValues.GetAirport(bson.M{"country": country})
 	if err != nil {
-		http.Error(w, "Unable to find any airports in the country", http.StatusBadRequest)
+		http.Error(w, "Unable to find any Airports in the country", http.StatusBadRequest)
 		return
 	}
 	AirportNames := []string{}
@@ -171,7 +311,7 @@ func AirportInCountryHandler(w http.ResponseWriter, r *http.Request) {
 
 	portJSON, err := json.Marshal(AirportNames)
 	if err != nil {
-		http.Error(w, "Unable to parse the airport names", http.StatusBadRequest)
+		http.Error(w, "Unable to parse the Airport names", http.StatusBadRequest)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -201,8 +341,8 @@ func main() {
 	router.HandleFunc("/flight-tracker", PlaneHandler)
 	router.HandleFunc("/flight-tracker/{country:.+}", OriginCountryHandler)
 	router.HandleFunc("/flight-tracker/plane", PlaneListHandler)
-	/*router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]+}", PlaneInfoHandler)
-	router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]}/{field:[A-Za-z0-9]+}", PlaneFieldHandler)
+	router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]+}", PlaneInfoHandler)
+	/*router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]+}/{field:[A-Za-z0-9]+}", PlaneFieldHandler)
 	router.HandleFunc("/flight-tracker/plane/map/{icao24:[A-Za-z0-9]+}", PlaneMapHandler)
 	router.HandleFunc("/flight-tracker/plane/country/{country:.+}", CountryHandler)
 	router.HandleFunc("/flight-tracker/plane/country/map/{country:.+}", CountryMapHandler)
