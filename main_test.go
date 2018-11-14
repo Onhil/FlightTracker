@@ -65,15 +65,15 @@ func TestOriginCountryHandler(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-		narr, err := http.Get(ts.URL + "/lasdfkjhfkjhb")
+	narr, err := http.Get(ts.URL + "/lasdfkjhfkjhb")
 
-		if narr.StatusCode != http.StatusBadRequest {
-			t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, narr.StatusCode)
-		}
+	if narr.StatusCode != http.StatusBadRequest {
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, narr.StatusCode)
+	}
 
-		if err != nil {
-			t.Error(err)
-		}
+	if err != nil {
+		t.Error(err)
+	}
 
 }
 
@@ -87,6 +87,7 @@ func TestDepartureHandler(t *testing.T) {
 	}
 
 	DBValues.Init()
+	defer tearDownDB(t, &DBValues)
 	if DBValues.Count(DBValues.CollectionFlight) != 0 {
 		t.Error("Database not properly initialized, database count should be 0")
 	}
@@ -144,7 +145,6 @@ func TestArrivalHandler(t *testing.T) {
 		t.Error(err)
 	}
 	defer session.Close()
-
 	defer tearDownDB(t, &DBValues)
 
 	DBValues.Init()
@@ -266,7 +266,7 @@ func TestPlaneFieldHandler(t *testing.T) {
 	// Actual test
 	ts := httptest.NewServer(http.HandlerFunc(PlaneFieldHandler))
 	defer ts.Close()
-/* // TODO: Fix this!
+	/* // TODO: Fix this!
 	resp, err := http.Get(ts.URL + "/Reku/Callsign")
 	if resp.StatusCode != http.StatusOK {
 		t.Errorf("Expected StatusCode %d, received %d", http.StatusOK, resp.StatusCode)
