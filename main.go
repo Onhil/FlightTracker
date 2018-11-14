@@ -392,7 +392,7 @@ func main() {
 	}
 	router := mux.NewRouter()
 	router.HandleFunc("/flight-tracker", PlaneHandler)
-	router.HandleFunc("/flight-tracker/{country:.+}", OriginCountryHandler)
+	router.HandleFunc("/flight-tracker/country/{country:.+}", OriginCountryHandler)
 	router.HandleFunc("/flight-tracker/plane", PlaneListHandler)
 	router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]+}", PlaneInfoHandler)
 	router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]+}/{field:[A-Za-z0-9]+}", PlaneFieldHandler)
