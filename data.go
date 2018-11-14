@@ -31,7 +31,7 @@ type State struct {
 
 // Flight stores flight data and info about departure and arrival airport
 type Flight struct {
-	Icao24              string `json:"icao24"`              // Unique ICAO 24-bit address of the transponder in hex string representation. All letters are lower case.
+	Icao24F              string `json:"icao24"`              // Unique ICAO 24-bit address of the transponder in hex string representation. All letters are lower case.
 	FirstSeen           int    `json:"firstSeen"`           // Estimated time of departure for the flight as Unix time (seconds since epoch).
 	EstDepartureAirport string `json:"estDepartureAirport"` // ICAO code of the estimated departure airport. Can be null if the airport could not be identified.
 	LastSeen            int    `json:"lastSeen"`            // Estimated time of arrival for the flight as Unix time (seconds since epoch)
