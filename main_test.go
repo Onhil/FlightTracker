@@ -78,6 +78,55 @@ func TestOriginCountryHandler(t *testing.T) {
 }
 
 func TestDepartureHandler(t *testing.T) {
+	DBValues = Database{
+		HostURL:           "mongodb://localhost",
+		DatabaseName:      "testing",
+		CollectionState:   "testState",
+		CollectionAirport: "testAirport",
+		CollectionFlight:  "testFlight",
+	}
+
+	DBValues.Init()
+	if DBValues.Count(DBValues.CollectionFlight) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	// adds state with country as one of its values
+	testState := Flight{"A", 1, "B", 1, "Reku", "C"}
+	var testStateArray []interface{}
+	testStateArray = append(testStateArray, testState)
+
+	err := DBValues.Add(testStateArray, DBValues.CollectionFlight)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if DBValues.Count(DBValues.CollectionFlight) != 1 {
+		t.Error("Database not properly initialized, database count should be 1")
+	}
+
+	// Actual test of the handler in question
+	ts := httptest.NewServer(http.HandlerFunc(DepartureHandler))
+	defer ts.Close()
+
+	resp, err := http.Get(ts.URL + "/B")
+
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusOK, resp.StatusCode)
+	}
+
+	if err != nil {
+		t.Error(err)
+	}
+	narr, err := http.Get(ts.URL + "/lasdfkjhfkjhb")
+
+	if narr.StatusCode != http.StatusBadRequest {
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, narr.StatusCode)
+	}
+
+	if err != nil {
+		t.Error(err)
+	}
 
 }
 
