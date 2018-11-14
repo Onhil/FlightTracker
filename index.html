@@ -23,25 +23,56 @@ var infowindow = new google.maps.InfoWindow();
 
 
 
+{{range $key, $value := .Airports}}
+
+var pos = {lat: {{$value.Latitude}}, lng: {{$value.Longitude}}};
+
+var img = {
+    url: "https://raw.githubusercontent.com/Onhil/FlightTracker/master/Pictures/Airport.png"
+}
+
+var marker = new google.maps.Marker({position: pos, icon: img, map: map});
+
+var content = "Airport"
+
+google.maps.event.addListener(marker, 'click', (function(marker, content, infowindow) {
+  return function(){
+  infowindow.setContent(content);
+  infowindow.open(map,marker);
+  }
+  })(marker, content, infowindow));
+
+{{end}}
+
+
+
+
 {{range $key, $value := .Planes}}
 
-var test = {lat: {{$value.Latitude}}, lng: {{$value.Longitude}}};
+var pos = {lat: {{$value.Latitude}}, lng: {{$value.Longitude}}};
 
 var img = {
     url: "https://raw.githubusercontent.com/Onhil/FlightTracker/master/Pictures/plane" + Math.floor({{$value.TrueTrack}}) + ".png",
 }
 
-var marker = new google.maps.Marker({position: test, icon: img, map: map});
+var marker = new google.maps.Marker({position: pos, icon: img, map: map});
 
 
 var callsign = {{$value.State.Callsign}} 
 var icao24 = {{$value.State.Icao24}}
 var country = {{$value.OriginCountry}}
 var baroalt = {{$value.BaroAltitude}}
+var velocity = {{$value.Velocity}}
+var geoAltitude = {{$value.GeoAltitude}}
+var verticalspeed = {{$value.VerticalRate}}
+var arrAirport = {{$value.EstArrivalAirport}}
+var deprtAirport = {{$value.EstDepartureAirport}}
+var lastContact = {{$value.LastSeen}}
 
 
 var content = "Icao24: " + icao24 + '<br>' + "Callsign: " + callsign + '<br>'+ "Country of origin: " + country + '<br>'
-+ "Barometric Altitude: " + baroalt
++ "Barometric Altitude: " + baroalt + "m" + '<br>' + "Geo Altitude: " + geoAltitude + "m" + '<br>' + "Vertical speed: " + verticalspeed + " m/s"
++  '<br>' + "Arrival airport: " + arrAirport + '<br>' + "Departure airport: " + deprtAirport + '<br>' + "Last Contact: " + lastContact
 
 google.maps.event.addListener(marker, 'click', (function(marker, content, infowindow) {
   return function(){

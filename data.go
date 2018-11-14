@@ -85,21 +85,11 @@ type Database struct {
 	CollectionFlight  string
 }
 
-// PlaneMarker is a marker for a plane
-type PlaneMarker struct {
-	Lat              float64
-	Long             float64
-	Icao24           string
-	Callsign         string
-	DepartureAirport string
-	DepartureTime    int
-	TrueTrack        float64
-}
-
 // Markers holds markers values
 type Markers struct {
-	Title  string
-	Planes map[int]Planes
+	Title    string
+	Planes   map[int]Planes
+	Airports map[int]Airport
 }
 
 // DBValues is a database element which is accessible everywhere, not sure if this is needed to be honest
