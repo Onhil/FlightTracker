@@ -65,7 +65,7 @@ func TestOriginCountryHandler(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	/* // TODO: either fix this test if it is wrong or fix the code so it returns an error when it should
+	 // TODO: either fix this test if it is wrong or fix the code so it returns an error when it should
 		narr, err := http.Get(ts.URL + "/lasdfkjhfkjhb")
 
 		if narr.StatusCode != http.StatusBadRequest {
@@ -75,7 +75,7 @@ func TestOriginCountryHandler(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-*/
+
 }
 
 func TestDepartureHandler(t *testing.T) {
@@ -133,7 +133,7 @@ func TestArrivalHandler(t *testing.T) {
 	resp, err = http.Get(ts.URL + "/djkfjkndfjkfd")
 	if resp.StatusCode == http.StatusOK {
 		// TODO: add error on incorrect value in database.go/GetPlanes
-		// t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, resp.StatusCode)
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, resp.StatusCode)
 	}
 
 	if err != nil {
