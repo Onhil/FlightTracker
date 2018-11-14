@@ -189,11 +189,25 @@ func TestArrivalHandler(t *testing.T) {
 }
 
 func TestPlaneListHandler(t *testing.T) {
-	db := setupDB(t)
-	defer tearDownDB(t, db)
+	// Setup
+	DBValues = Database{
+		HostURL:           "mongodb://localhost",
+		DatabaseName:      "testing",
+		CollectionState:   "testState",
+		CollectionAirport: "testAirport",
+		CollectionFlight:  "testFlight",
+	}
 
-	db.Init()
-	if db.Count(db.CollectionState) != 0 {
+	session, err := mgo.Dial(DBValues.HostURL)
+	if err != nil {
+		t.Error(err)
+	}
+	defer session.Close()
+
+	defer tearDownDB(t, &DBValues)
+
+	DBValues.Init()
+	if DBValues.Count(DBValues.CollectionState) != 0 {
 		t.Error("Database not properly initialized, database count should be 0")
 	}
 
@@ -201,12 +215,12 @@ func TestPlaneListHandler(t *testing.T) {
 	var testStateArray []interface{}
 	testStateArray = append(testStateArray, testState)
 
-	err := db.Add(testStateArray, db.CollectionState)
+	err = DBValues.Add(testStateArray, DBValues.CollectionState)
 	if err != nil {
 		t.Error(err)
 	}
 
-	if db.Count(db.CollectionState) != 1 {
+	if DBValues.Count(DBValues.CollectionState) != 1 {
 		t.Error("Database not properly initialized, database count should be 1")
 	}
 
