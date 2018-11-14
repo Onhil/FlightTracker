@@ -61,6 +61,55 @@ func TestAdd(t *testing.T) {
 	}
 }
 
+func TestGetFlight(t *testing.T) {
+
+}
+
+func TestGetState(t *testing.T) {
+
+}
+
+func TestGetAirport(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
+
+	db.Init()
+	if db.Count(db.CollectionAirport) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	testAirport1 := Airport{1, "Gjovik Airport", "Gjovik", "Mekka", "GJO", "GJOV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
+	testAirport2 := Airport{2, "Bardufoss Airport", "Bardufoss", "Norway", "BAR", "BARD", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
+	testAirport3 := Airport{3, "Molvik Airport", "Molvik", "Norway", "MOL", "MOLV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
+
+	var d []interface{}
+	d = append(d, testAirport1)
+	d = append(d, testAirport2)
+	d = append(d, testAirport3)
+
+	err := db.Add(d, db.CollectionAirport)
+
+	if err != nil {
+		t.Error("There should not have been any errors!")
+	}
+
+	// FindData := bson.M{"country":"Mekka"}
+
+	var FindData map[string]interface{}
+
+	FindData = make(map[string]interface{})
+	FindData["Country"] = "Mekka"
+	/* // TODO: Fix this test
+		a, err := db.GetAirport(FindData)
+		if err != nil {
+			t.Errorf("Error in retrival of Country, %s", err)
+		}
+
+		if a[0] != testAirport1 {
+			t.Error("Incorrect airport was returned")
+		}*/
+}
+
 func TestGetPlanes(t *testing.T) {
 	db := setupDB(t)
 	defer tearDownDB(t, db)
@@ -94,47 +143,6 @@ func TestGetPlanes(t *testing.T) {
 	}
 	if s[0].State != testState {
 		t.Error("Incorrect State were returned")
-	}*/
-}
-
-func TestGetAirport(t *testing.T) {
-	db := setupDB(t)
-	defer tearDownDB(t, db)
-
-	db.Init()
-	if db.Count(db.CollectionAirport) != 0 {
-		t.Error("Database not properly initialized, database count should be 0")
-	}
-
-	testAirport1 := Airport{1, "Gjovik Airport", "Gjovik", "Mekka", "GJO", "GJOV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
-	testAirport2 := Airport{2, "Bardufoss Airport", "Bardufoss", "Norway", "BAR", "BARD", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
-	testAirport3 := Airport{3, "Molvik Airport", "Molvik", "Norway", "MOL", "MOLV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
-
-	var d []interface{}
-	d = append(d, testAirport1)
-	d = append(d, testAirport2)
-	d = append(d, testAirport3)
-
-	err := db.Add(d, db.CollectionAirport)
-
-	if err != nil {
-		t.Error("There should not have been any errors!")
-	}
-
-	// FindData := bson.M{"country":"Mekka"}
-
-	var FindData map[string]interface{}
-
-	FindData = make(map[string]interface{})
-	FindData["Country"] = "Mekka"
-/* // TODO: Fix this test
-	a, err := db.GetAirport(FindData)
-	if err != nil {
-		t.Errorf("Error in retrival of Country, %s", err)
-	}
-
-	if a[0] != testAirport1 {
-		t.Error("Incorrect airport was returned")
 	}*/
 }
 
