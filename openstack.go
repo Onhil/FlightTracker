@@ -71,6 +71,7 @@ func updateAirports() {
 	}
 }
 
+// Body gets the body from the url and returns it in []byte format
 func Body(url string) []byte {
 	resp, err := http.Get(url)
 	if err != nil {

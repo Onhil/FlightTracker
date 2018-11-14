@@ -83,7 +83,7 @@ func (db *Database) Count(collN string) int {
 	return count
 }
 
-// Getflight accepts bson.M{} to find all flights with choosen paramaters
+// GetFlight accepts bson.M{} to find all flights with choosen paramaters
 // Example
 // findData == bson.M{"estarrivalairport": "ENFL"}
 func (db *Database) GetFlight(findData bson.M) ([]Flight, error) {
