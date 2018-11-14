@@ -65,7 +65,6 @@ func TestOriginCountryHandler(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	 // TODO: either fix this test if it is wrong or fix the code so it returns an error when it should
 		narr, err := http.Get(ts.URL + "/lasdfkjhfkjhb")
 
 		if narr.StatusCode != http.StatusBadRequest {
@@ -174,4 +173,44 @@ func TestPlaneListHandler(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+}
+
+func TestPlaneInfoHandler(t *testing.T) {
+
+}
+
+func TestPlaneFieldHandler(t *testing.T) {
+
+}
+
+func TestPlaneMapHandler(t *testing.T) {
+
+}
+
+func TestCountryHandler(t *testing.T) {
+
+}
+
+func TestCountryMapHandler(t *testing.T) {
+
+}
+
+func TestAirportListHandler(t *testing.T) {
+
+}
+
+func TestAirportInfoHandler(t *testing.T) {
+
+}
+
+func TestAirportFieldHandler(t *testing.T) {
+
+}
+
+func TestAirportCountryHandler(t *testing.T) {
+
+}
+
+func TestAirportInCountryHandler(t *testing.T) {
+
 }
