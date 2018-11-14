@@ -52,26 +52,14 @@ func ArrivalHandler(w http.ResponseWriter, r *http.Request) {
 
 // PlaneListHandler Lists all planes by ICAO24
 func PlaneListHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 
-	plason := []string{}
 	planes, err := DBValues.GetState(nil)
 	if err != nil {
 		http.Error(w, "Error getting planes", http.StatusBadRequest)
 		return
 	}
 
-	for i := 0; i < len(planes); i++ {
-		plason = append(plason, planes[i].Icao24)
-	}
-
-	IcaoJSON, err := json.Marshal(planes)
-	if err != nil {
-		http.Error(w, "Error parsing planes", http.StatusBadRequest)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-	w.Write(IcaoJSON)
+	render.JSON(w, r, planes)
 }
 
 // PlaneInfoHandler Returns information about plane
@@ -347,7 +335,7 @@ func main() {
 	}
 	router := mux.NewRouter()
 	router.HandleFunc("/flight-tracker", PlaneHandler)
-	router.HandleFunc("/flight-tracker/{country:.+}", OriginCountryHandler)
+	router.HandleFunc("/flight-tracker/country/{country:.+}", OriginCountryHandler)
 	router.HandleFunc("/flight-tracker/plane", PlaneListHandler)
 	router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]+}", PlaneInfoHandler)
 	router.HandleFunc("/flight-tracker/plane/{icao24:[A-Za-z0-9]+}/{field:[A-Za-z0-9]+}", PlaneFieldHandler)
