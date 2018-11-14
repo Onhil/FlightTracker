@@ -82,7 +82,7 @@ func PlaneListHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	plason := []string{}
-	planes, err := DBValues.GetPlanes(nil)
+	planes, err := DBValues.GetState(nil)
 	if err != nil {
 		http.Error(w, "Error getting planes", http.StatusBadRequest)
 	}
@@ -93,16 +93,12 @@ func PlaneListHandler(w http.ResponseWriter, r *http.Request) {
 
 	IcaoJSON, err := json.Marshal(planes)
 	if err != nil {
-		http.Error(w, "Error getting planes", http.StatusBadRequest)
+		http.Error(w, "Error parsing planes", http.StatusBadRequest)
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(IcaoJSON)
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> ae0fdecfa21535feb95df0a62012d60bbcd3a8df
 // PlaneInfoHandler Returns information about plane
 func PlaneInfoHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -111,7 +107,7 @@ func PlaneInfoHandler(w http.ResponseWriter, r *http.Request) {
 
 	icao24 := parts[len(parts)-1]
 
-	temp, err := DBValues.GetPlanes(bson.M{"icao24": icao24})
+	temp, err := DBValues.GetState(bson.M{"icao24": icao24})
 	if err != nil {
 		http.Error(w, "Error getting plane info", http.StatusBadRequest)
 	}
@@ -172,7 +168,7 @@ func PlaneFieldHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	FieldJSON, err := json.Marshal(Response)
 	if err != nil {
-		http.Error(w, "Error parsing plane info", http.StatusBadRequest)
+		http.Error(w, "Error parsing field", http.StatusBadRequest)
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(FieldJSON)
@@ -210,7 +206,7 @@ func AirportInfoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	port := airport[0]		//Convert array to single airport, in case of more than one airport with the ICAO which should not happen
+	port := airport[0] //Convert array to single airport, in case of more than one airport with the ICAO which should not happen
 
 	portJSON, err := json.Marshal(port)
 	if err != nil {
@@ -235,9 +231,9 @@ func AirportFieldHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	port := airport[0]		//Convert array to single airport, in case of more than one airport with the ICAO which should not happen
+	port := airport[0] //Convert array to single airport, in case of more than one airport with the ICAO which should not happen
 
-	 var Response interface{}
+	var Response interface{}
 
 	switch field {
 	case "ID":
@@ -266,8 +262,9 @@ func AirportFieldHandler(w http.ResponseWriter, r *http.Request) {
 		Response = port.Type
 	case "Source":
 		Response = port.Source
-	default: http.Error(w, "Field is not included in Airport!", http.StatusBadRequest)
-	return
+	default:
+		http.Error(w, "Field is not included in Airport!", http.StatusBadRequest)
+		return
 	}
 
 	portJSON, err := json.Marshal(Response)
