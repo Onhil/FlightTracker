@@ -14,8 +14,12 @@ func Run() {
 	for {
 		// Concurrent updating of states and flights
 		// This might go horribly wrong at some point
-		go updateStates()
-		go updateFlights()
+		updateStates()
+		fmt.Println("States")
+		updateFlights()
+		fmt.Println("States")
+		updateAirports()
+		fmt.Println("Airports")
 		fmt.Println("Next update in 15 min")
 		time.Sleep(15 * time.Minute)
 	}
@@ -48,6 +52,21 @@ func updateFlights() {
 		documents = append(documents, flights[i])
 	}
 	if err := DBValues.Add(documents, DBValues.CollectionFlight); err != nil {
+		fmt.Println(err)
+	}
+}
+
+func updateAirports() {
+	var airports []Airport
+
+	if err := json.Unmarshal(Body("https://raw.githubusercontent.com/Onhil/FlightTracker/master/Airports.json"), &airports); err != nil {
+		fmt.Println(err)
+	}
+	var documents []interface{}
+	for i := range airports {
+		documents = append(documents, airports[i])
+	}
+	if err := DBValues.Add(documents, DBValues.CollectionAirport); err != nil {
 		fmt.Println(err)
 	}
 }
