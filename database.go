@@ -82,10 +82,10 @@ func (db *Database) Count(collN string) int {
 	return count
 }
 
-// GetPlanes accepts bson.M{} to find all flights with choosen paramaters
+// Getflight accepts bson.M{} to find all flights with choosen paramaters
 // Example
 // findData == bson.M{"origincountry": "Italy"}
-func (db *Database) GetPlanes(findData bson.M) ([]Planes, error) {
+func (db *Database) Getflight(findData bson.M) ([]Flight, error) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -93,14 +93,10 @@ func (db *Database) GetPlanes(findData bson.M) ([]Planes, error) {
 
 	defer session.Close()
 
-	var state []State
-	var flight []Flight
+	var flights []Flight
+	err = session.DB(db.DatabaseName).C(db.CollectionFlight).Find(findData).All(&flights)
 
-	err = session.DB(db.DatabaseName).C(db.CollectionState).Find(findData).All(&state)
-	err = session.DB(db.DatabaseName).C(db.CollectionState).Find(findData).All(&flight)
-
-	planes := mergeStatesAndFlights(state, flight)
-	return planes, err
+	return flights, nil
 }
 
 // GetAirport accepts bson.M{} to find all Airports with choosen paramters
