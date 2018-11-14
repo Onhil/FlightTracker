@@ -131,7 +131,6 @@ func TestArrivalHandler(t *testing.T) {
 
 	resp, err = http.Get(ts.URL + "/djkfjkndfjkfd")
 	if resp.StatusCode == http.StatusOK {
-		// TODO: add error on incorrect value in database.go/GetPlanes
 		t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, resp.StatusCode)
 	}
 
