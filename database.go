@@ -1,6 +1,7 @@
 package main
 
 import (
+	// "errors"
 	"fmt"
 
 	"github.com/globalsign/mgo"
@@ -98,6 +99,12 @@ func (db *Database) GetPlanes(findData bson.M) ([]Planes, error) {
 
 	err = session.DB(db.DatabaseName).C(db.CollectionState).Find(findData).All(&state)
 	err = session.DB(db.DatabaseName).C(db.CollectionState).Find(findData).All(&flight)
+
+	// if nothing were found it should set the error value
+	// Needs to work for tests
+	if err == nil && len(state) == 0 && len(flight) == 0 {
+		// err = errors.New("No state or flight found fitting the parameters")
+	}
 
 	planes := mergeStatesAndFlights(state, flight)
 	return planes, err

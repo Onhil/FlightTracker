@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestUnmarshalJSON(t *testing.T) { // WIP
+func TestUnmarshalJSON(t *testing.T) {
 	var state States
 
 	if err := json.Unmarshal(body("https://opensky-network.org/api/states/all"), &state); err != nil {
