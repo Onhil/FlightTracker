@@ -69,6 +69,7 @@ type Airport struct {
 	Source             string  `json:"Source"`                //Source of this data. "OurAirports" is the only source
 }
 
+// AirportJSON holds the json for Airport
 type AirportJSON struct {
 	Aport     Airport `json:"Airport"`
 	Arriving  string  `json:"Arriving"`
