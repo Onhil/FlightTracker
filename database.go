@@ -1,7 +1,7 @@
 package main
 
 import (
-	// "errors"
+	"errors"
 	"fmt"
 
 	"github.com/globalsign/mgo"
@@ -136,6 +136,39 @@ func (db *Database) GetAirport(findData bson.M) ([]Airport, error) {
 	return port, err
 }
 
-func (db *Database) GetPlanes(f bson.M) ([]Planes, error) {
-	return []Planes{}, nil
+func (db *Database) GetPlanes(find bson.M) ([]Planes, error) {
+	var s []State
+	var f []Flight
+	var err error
+
+	if s, err = db.GetState(find); err != nil {
+		fmt.Println(err)
+	}
+	if f, err = db.Getflight(find); err != nil {
+		fmt.Println(err)
+	}
+	if s != nil && f != nil {
+		// Merges states and flight together
+		planes := mergeStatesAndFlights(s, f)
+		return planes, nil
+	}
+	// Returns all flights if find parameter resulted in none
+	if s != nil && f == nil {
+		f = nil
+		if f, err = db.Getflight(nil); err != nil {
+			return []Planes{}, nil
+		}
+		// Returns all states if find parameter resulted in none
+	} else if s == nil && f != nil {
+		s = nil
+		if s, err = db.GetState(nil); err != nil {
+			return []Planes{}, nil
+		}
+	} else {
+		return []Planes{}, errors.New("Nothing found in States or Flights with those parameters")
+	}
+
+	// Merges states and flight together
+	planes := mergeStatesAndFlights(s, f)
+	return planes, nil
 }

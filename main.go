@@ -22,12 +22,15 @@ func PlaneHandler(w http.ResponseWriter, r *http.Request) {
 	pllanes, _ = DBValues.GetPlanes(nil)
 
 	planes := make(map[int]Planes)
+	airports := make(map[int]Airport)
+
+	airports[0] = Airport{Latitude: 0, Longitude: 0}
 
 	for i := 0; i < len(pllanes); i++ {
 		planes[i] = pllanes[i]
 	}
 
-	p := Markers{Title: "Plz Work", Planes: planes}
+	p := Markers{Title: "Plz Work", Planes: planes, Airports: airports}
 
 	t, err := template.ParseFiles("index.html")
 	if err != nil {
@@ -82,7 +85,7 @@ func PlaneListHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	plason := []string{}
-	planes, err := DBValues.GetPlanes(nil)
+	planes, err := DBValues.GetState(nil)
 	if err != nil {
 		http.Error(w, "Error getting planes", http.StatusBadRequest)
 	}
@@ -93,7 +96,7 @@ func PlaneListHandler(w http.ResponseWriter, r *http.Request) {
 
 	IcaoJSON, err := json.Marshal(planes)
 	if err != nil {
-		http.Error(w, "Error getting planes", http.StatusBadRequest)
+		http.Error(w, "Error parsing planes", http.StatusBadRequest)
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(IcaoJSON)
@@ -107,7 +110,7 @@ func PlaneInfoHandler(w http.ResponseWriter, r *http.Request) {
 
 	icao24 := parts[len(parts)-1]
 
-	temp, err := DBValues.GetPlanes(bson.M{"icao24": icao24})
+	temp, err := DBValues.GetState(bson.M{"icao24": icao24})
 	if err != nil {
 		http.Error(w, "Error getting plane info", http.StatusBadRequest)
 	}
@@ -168,7 +171,7 @@ func PlaneFieldHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	FieldJSON, err := json.Marshal(Response)
 	if err != nil {
-		http.Error(w, "Error parsing plane info", http.StatusBadRequest)
+		http.Error(w, "Error parsing field", http.StatusBadRequest)
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(FieldJSON)
