@@ -84,3 +84,7 @@ func TestDepartureHandler(t *testing.T) {
 func TestArrivalHandler(t *testing.T) {
 
 }
+
+func TestPlaneListHandler(t *testing.T) {
+
+}

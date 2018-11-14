@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/globalsign/mgo"
+	//"github.com/globalsign/mgo/bson"
 )
 
 func setupDB(t *testing.T) *Database {
@@ -60,6 +61,52 @@ func TestAdd(t *testing.T) {
 	}
 }
 
+func TestGetPlanes(t *testing.T) {
+
+}
+
+func TestGetAirport(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
+
+	db.Init()
+	if db.Count(db.CollectionAirport) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	testAirport1 := Airport{1, "Gjovik Airport", "Gjovik", "Mekka", "GJO", "GJOV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
+	testAirport2 := Airport{2, "Bardufoss Airport", "Bardufoss", "Norway", "BAR", "BARD", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
+	testAirport3 := Airport{3, "Molvik Airport", "Molvik", "Norway", "MOL", "MOLV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
+
+	var d []interface{}
+	d = append(d, testAirport1)
+	d = append(d, testAirport2)
+	d = append(d, testAirport3)
+
+	err := db.Add(d, db.CollectionAirport)
+
+	if err != nil {
+		t.Error("There should not have been any errors!")
+	}
+
+	// FindData := bson.M{"country":"Mekka"}
+
+	var FindData map[string]interface{}
+
+	FindData = make(map[string]interface{})
+	FindData["Country"] = "Mekka"
+
+	a, err := db.GetAirport(FindData)
+	if err != nil {
+		t.Errorf("Error in retrival of Country, %s", err)
+	}
+
+	if a[0] != testAirport1 {
+		t.Error("Incorrect airport was returned")
+	}
+}
+
+/*
 func TestGetICAO24(t *testing.T) {
 	db := setupDB(t)
 	defer tearDownDB(t, db)
@@ -118,42 +165,8 @@ func TestGetOriginCountry(t *testing.T) {
 	if s[0] != testState {
 		t.Error("Incorrect State were returned")
 	}
-}
-
-func TestGetAirport(t *testing.T) {
-	db := setupDB(t)
-	defer tearDownDB(t, db)
-
-	db.Init()
-	if db.Count(db.CollectionAirport) != 0 {
-		t.Error("Database not properly initialized, database count should be 0")
-	}
-
-	testAirport1 := Airport{1, "Gjovik Airport", "Gjovik", "Norway", "GJO", "GJOV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
-	testAirport2 := Airport{2, "Bardufoss Airport", "Bardufoss", "Norway", "BAR", "BARD", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
-	testAirport3 := Airport{3, "Molvik Airport", "Molvik", "Norway", "MOL", "MOLV", float64(10), float64(24), float64(500), float64(100), "E", "Norway/Oslo", "airport", "test"}
-
-	var d []interface{}
-	d = append(d, testAirport1)
-	d = append(d, testAirport2)
-	d = append(d, testAirport3)
-
-	err := db.Add(d, db.CollectionAirport)
-
-	if err != nil {
-		t.Error("There should not have been any errors!")
-	}
-
-	a, err := db.GetAirport("BARD")
-	if err != nil {
-		t.Errorf("Error in retrival of OriginCountry, %s", err)
-	}
-
-	if a != testAirport2 {
-		t.Error("Incorrect airport was returned")
-	}
-}
-
+}*/
+/*
 func TestGetAllFlights(t *testing.T) {
 	db := setupDB(t)
 	defer tearDownDB(t, db)
@@ -184,7 +197,7 @@ func TestGetAllFlights(t *testing.T) {
 
 	if flights != flightList {
 		t.Error("Error in GetAllFlights!")
-	}*/
+	}
 }
 
 func TestGetFlightFieldData(t *testing.T) {
@@ -197,7 +210,7 @@ func TestGetFlightFieldData(t *testing.T) {
 	}
 
 }
-
+*/
 /// Commented out likely not needed as UpdateState is changed to removing all documents and adding new ones
 
 /* func TestAddDuplicates(t *testing.T) {
