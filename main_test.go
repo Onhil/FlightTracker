@@ -196,7 +196,43 @@ func TestPlaneListHandler(t *testing.T) {
 }
 
 func TestPlaneInfoHandler(t *testing.T) {
+	DBValues = *setupDB(t)
+	defer tearDownDB(t, &DBValues)
 
+	DBValues.Init()
+	if DBValues.Count(DBValues.CollectionState) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	var testStateArray []interface{}
+	testStateArray = append(testStateArray, testState)
+
+	err := DBValues.Add(testStateArray, DBValues.CollectionState)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	ts := httptest.NewServer(http.HandlerFunc(PlaneInfoHandler))
+	defer ts.Close()
+
+	resp, err := http.Get(ts.URL + "/A")
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusOK, resp.StatusCode)
+	}
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	resp, err = http.Get(ts.URL + "/skjahfhjksdfukhj") // TODO: Make the funciton being tested return an error when it should
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, resp.StatusCode)
+	}
+
+	if err != nil {
+		t.Error(err)
+	}
 }
 
 func TestPlaneFieldHandler(t *testing.T) {
