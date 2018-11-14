@@ -64,7 +64,7 @@ func TestOriginCountryHandler(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	/*
+	/* // TODO: either fix this test if it is wrong or fix the code so it returns an error when it should
 		narr, err := http.Get(ts.URL + "/")
 
 		if narr.StatusCode != http.StatusBadRequest {
@@ -74,7 +74,7 @@ func TestOriginCountryHandler(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-	*/
+*/
 }
 
 func TestDepartureHandler(t *testing.T) {
@@ -86,5 +86,36 @@ func TestArrivalHandler(t *testing.T) {
 }
 
 func TestPlaneListHandler(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
 
+	db.Init()
+	if db.Count(db.CollectionState) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	var testStateArray []interface{}
+	testStateArray = append(testStateArray, testState)
+
+	err := db.Add(testStateArray, db.CollectionState)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if db.Count(db.CollectionState) != 1 {
+		t.Error("Database not properly initialized, database count should be 1")
+	}
+
+	ts := httptest.NewServer(http.HandlerFunc(PlaneListHandler))
+	defer ts.Close()
+
+	resp, err := http.Get(ts.URL + "")
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusOK, resp.StatusCode)
+	}
+
+	if err != nil {
+		t.Error(err)
+	}
 }
