@@ -113,7 +113,7 @@ func (db *Database) GetPlanes(findData bson.M) ([]Planes, error) {
 // GetAirport accepts bson.M{} to find all Airports with choosen paramters
 // Example
 // FindData == bson.M{"country": "Italy"}
-func (db *Database) GetAirport(findData map[string]interface{}) ([]Airport, error) {
+func (db *Database) GetAirport(findData bson.M) ([]Airport, error) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
