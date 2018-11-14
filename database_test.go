@@ -100,7 +100,37 @@ func TestGetFlight(t *testing.T) {
 }
 
 func TestGetState(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
 
+	db.Init()
+	if db.Count(db.CollectionState) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	var testStateArray []interface{}
+	testStateArray = append(testStateArray, testState)
+
+	err := db.Add(testStateArray, db.CollectionState)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if db.Count(db.CollectionState) != 1 {
+		t.Error("Database not properly initialized, database count should be 1")
+	}
+
+	FindData := bson.M{"callsign": "B"}
+
+	s, err := db.GetState(FindData)
+	if err != nil {
+		t.Errorf("Error in retrival of value, %s", err)
+	}
+
+	if s[0] != testState {
+		t.Error("Incorrect state was returned")
+	}
 }
 
 func TestGetAirport(t *testing.T) {
