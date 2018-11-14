@@ -225,11 +225,7 @@ func CountryMapHandler(w http.ResponseWriter, r *http.Request) {
 
 // AirportListHandler Lists all airports by ICAO
 func AirportListHandler(w http.ResponseWriter, r *http.Request) {
-	parts := strings.Split(r.URL.Path, "/")
-
-	icao := parts[len(parts)-1]
-
-	airports, err := DBValues.GetAirport(bson.M{"icao": icao})
+	airports, err := DBValues.GetAirport(nil)
 	if err != nil {
 		http.Error(w, "Unable to find any Airports with the given ICAO", http.StatusBadRequest)
 		return
