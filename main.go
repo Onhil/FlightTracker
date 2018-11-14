@@ -303,7 +303,7 @@ func AirportInCountryHandler(w http.ResponseWriter, r *http.Request) {
 	AirportNames := []string{}
 
 	for i := 0; i < len(airports); i++ {
-		AirportNames = append(AirportNames, airports[i].Name)
+		AirportNames = append(AirportNames, airports[i].ICAO)
 	}
 
 	portJSON, err := json.Marshal(AirportNames)
