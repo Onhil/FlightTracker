@@ -135,3 +135,7 @@ func (db *Database) GetAirport(findData bson.M) ([]Airport, error) {
 
 	return port, err
 }
+
+func (db *Database) GetPlanes(f bson.M) ([]Planes, error) {
+	return []Planes{}, nil
+}
