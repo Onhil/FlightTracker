@@ -62,7 +62,41 @@ func TestAdd(t *testing.T) {
 }
 
 func TestGetFlight(t *testing.T) {
+	// Setup
+	db := setupDB(t)
+	defer tearDownDB(t, db)
 
+	db.Init()
+	if db.Count(db.CollectionFlight) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	var testFlightArray []interface{}
+	testFlight := Flight{"A", 1, "B", 1, "Reku", "C"}
+	testFlightArray = append(testFlightArray, testFlight)
+
+	err := db.Add(testFlightArray, db.CollectionFlight)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if DBValues.Count(db.CollectionFlight) >= 1 {
+		t.Error("Database not properly initialized, database count should be 1")
+	}
+
+	// Actual test
+
+	FindData := bson.M{"estarrivalairport": "Reku"}
+
+	a, err := db.GetFlight(FindData)
+	if err != nil {
+		t.Errorf("Error in retrival of Country, %s", err)
+	}
+
+	if a[0] != testFlight {
+		t.Error("Incorrect airport was returned")
+	}
 }
 
 func TestGetState(t *testing.T) {

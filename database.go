@@ -86,7 +86,7 @@ func (db *Database) Count(collN string) int {
 // Getflight accepts bson.M{} to find all flights with choosen paramaters
 // Example
 // findData == bson.M{"estarrivalairport": "ENFL"}
-func (db *Database) Getflight(findData bson.M) ([]Flight, error) {
+func (db *Database) GetFlight(findData bson.M) ([]Flight, error) {
 	session, err := mgo.Dial(db.HostURL)
 	if err != nil {
 		panic(err)
@@ -147,7 +147,7 @@ func (db *Database) GetPlanes(find bson.M) ([]Planes, error) {
 	if s, err = db.GetState(find); err != nil {
 		fmt.Println(err)
 	}
-	if f, err = db.Getflight(find); err != nil {
+	if f, err = db.GetFlight(find); err != nil {
 		fmt.Println(err)
 	}
 	if s != nil && f != nil {
@@ -157,7 +157,7 @@ func (db *Database) GetPlanes(find bson.M) ([]Planes, error) {
 	}
 	// Returns all flights if find parameter resulted in none
 	if s != nil && f == nil {
-		if f, err = db.Getflight(nil); err != nil {
+		if f, err = db.GetFlight(nil); err != nil {
 			return []Planes{}, nil
 		}
 		// Returns all states if find parameter resulted in none
