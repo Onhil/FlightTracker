@@ -97,7 +97,7 @@ func (db *Database) Getflight(findData bson.M) ([]Flight, error) {
 	var flights []Flight
 	err = session.DB(db.DatabaseName).C(db.CollectionFlight).Find(findData).All(&flights)
 
-	return flights, nil
+	return flights, err
 }
 
 // GetState accepts bson.M{} to find all flights with choosen paramaters
@@ -131,7 +131,7 @@ func (db *Database) GetAirport(findData bson.M) ([]Airport, error) {
 
 	var port []Airport
 
-	err = session.DB(db.DatabaseName).C(db.CollectionAirport).Find(findData).One(&port)
+	err = session.DB(db.DatabaseName).C(db.CollectionAirport).Find(findData).All(&port)
 
 	return port, err
 }
@@ -157,13 +157,11 @@ func (db *Database) GetPlanes(find bson.M) ([]Planes, error) {
 	}
 	// Returns all flights if find parameter resulted in none
 	if s != nil && f == nil {
-		f = nil
 		if f, err = db.Getflight(nil); err != nil {
 			return []Planes{}, nil
 		}
 		// Returns all states if find parameter resulted in none
 	} else if s == nil && f != nil {
-		s = nil
 		if s, err = db.GetState(nil); err != nil {
 			return []Planes{}, nil
 		}
