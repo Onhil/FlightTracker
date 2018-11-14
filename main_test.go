@@ -82,7 +82,6 @@ func TestDepartureHandler(t *testing.T) {
 }
 
 func TestArrivalHandler(t *testing.T) {
-
 	DBValues = Database{
 		HostURL:           "mongodb://localhost",
 		DatabaseName:      "testing",
@@ -179,7 +178,63 @@ func TestPlaneInfoHandler(t *testing.T) {
 }
 
 func TestPlaneFieldHandler(t *testing.T) {
+	// Setup
+	DBValues = Database{
+		HostURL:           "mongodb://localhost",
+		DatabaseName:      "testing",
+		CollectionState:   "testState",
+		CollectionAirport: "testAirport",
+		CollectionFlight:  "testFlight",
+	}
 
+	session, err := mgo.Dial(DBValues.HostURL)
+	if err != nil {
+		t.Error(err)
+	}
+	defer session.Close()
+
+	defer tearDownDB(t, &DBValues)
+
+	DBValues.Init()
+	if DBValues.Count(DBValues.CollectionFlight) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	// Adds element
+	testFlight := Flight{"A", 1, "B", 1, "Reku", "C"}
+	var testStateArray []interface{}
+	testStateArray = append(testStateArray, testFlight)
+
+	err = DBValues.Add(testStateArray, DBValues.CollectionFlight)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if DBValues.Count(DBValues.CollectionFlight) != 1 {
+		t.Error("Database not properly initialized, database count should be 1")
+	}
+
+	// Actual test
+	ts := httptest.NewServer(http.HandlerFunc(PlaneFieldHandler))
+	defer ts.Close()
+/* // TODO: Fix this!
+	resp, err := http.Get(ts.URL + "/Reku/Callsign")
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusOK, resp.StatusCode)
+	}
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	resp, err = http.Get(ts.URL + "/Reku/rattattat")
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, resp.StatusCode)
+	}
+
+	if err != nil {
+		t.Error(err)
+	}*/
 }
 
 func TestPlaneMapHandler(t *testing.T) {
