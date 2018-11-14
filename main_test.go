@@ -4,8 +4,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/globalsign/mgo"
 )
 
 func TestPlaneHandler(t *testing.T) {
@@ -23,19 +21,11 @@ func TestPlaneHandler(t *testing.T) {
 
 func TestOriginCountryHandler(t *testing.T) {
 	// Starts the database
-	db := setupDB(t)
-	defer tearDownDB(t, db)
+	DBValues = *setupDB(t)
+	defer tearDownDB(t, &DBValues)
 
-	DBValues = Database{
-		HostURL:           "mongodb://localhost",
-		DatabaseName:      "testing",
-		CollectionState:   "testState",
-		CollectionAirport: "testAirport",
-		CollectionFlight:  "testFlight",
-	}
-
-	db.Init()
-	if db.Count(db.CollectionState) != 0 {
+	DBValues.Init()
+	if DBValues.Count(DBValues.CollectionState) != 0 {
 		t.Error("Database not properly initialized, database count should be 0")
 	}
 
@@ -44,12 +34,12 @@ func TestOriginCountryHandler(t *testing.T) {
 	var testStateArray []interface{}
 	testStateArray = append(testStateArray, testState)
 
-	err := db.Add(testStateArray, db.CollectionState)
+	err := DBValues.Add(testStateArray, DBValues.CollectionState)
 	if err != nil {
 		t.Error(err)
 	}
 
-	if db.Count(db.CollectionState) != 1 {
+	if DBValues.Count(DBValues.CollectionState) != 1 {
 		t.Error("Database not properly initialized, database count should be 1")
 	}
 
@@ -79,16 +69,10 @@ func TestOriginCountryHandler(t *testing.T) {
 }
 
 func TestDepartureHandler(t *testing.T) {
-	DBValues = Database{
-		HostURL:           "mongodb://localhost",
-		DatabaseName:      "testing",
-		CollectionState:   "testState",
-		CollectionAirport: "testAirport",
-		CollectionFlight:  "testFlight",
-	}
+	DBValues = *setupDB(t)
+	defer tearDownDB(t, &DBValues)
 
 	DBValues.Init()
-	defer tearDownDB(t, &DBValues)
 	if DBValues.Count(DBValues.CollectionFlight) != 0 {
 		t.Error("Database not properly initialized, database count should be 0")
 	}
@@ -133,19 +117,7 @@ func TestDepartureHandler(t *testing.T) {
 }
 
 func TestArrivalHandler(t *testing.T) {
-	DBValues = Database{
-		HostURL:           "mongodb://localhost",
-		DatabaseName:      "testing",
-		CollectionState:   "testState",
-		CollectionAirport: "testAirport",
-		CollectionFlight:  "testFlight",
-	}
-
-	session, err := mgo.Dial(DBValues.HostURL)
-	if err != nil {
-		t.Error(err)
-	}
-	defer session.Close()
+	DBValues = *setupDB(t)
 	defer tearDownDB(t, &DBValues)
 
 	DBValues.Init()
@@ -157,7 +129,7 @@ func TestArrivalHandler(t *testing.T) {
 	var testStateArray []interface{}
 	testStateArray = append(testStateArray, testFlight)
 
-	err = DBValues.Add(testStateArray, DBValues.CollectionFlight)
+	err := DBValues.Add(testStateArray, DBValues.CollectionFlight)
 	if err != nil {
 		t.Error(err)
 	}
@@ -189,21 +161,7 @@ func TestArrivalHandler(t *testing.T) {
 }
 
 func TestPlaneListHandler(t *testing.T) {
-	// Setup
-	DBValues = Database{
-		HostURL:           "mongodb://localhost",
-		DatabaseName:      "testing",
-		CollectionState:   "testState",
-		CollectionAirport: "testAirport",
-		CollectionFlight:  "testFlight",
-	}
-
-	session, err := mgo.Dial(DBValues.HostURL)
-	if err != nil {
-		t.Error(err)
-	}
-	defer session.Close()
-
+	DBValues = *setupDB(t)
 	defer tearDownDB(t, &DBValues)
 
 	DBValues.Init()
@@ -215,7 +173,7 @@ func TestPlaneListHandler(t *testing.T) {
 	var testStateArray []interface{}
 	testStateArray = append(testStateArray, testState)
 
-	err = DBValues.Add(testStateArray, DBValues.CollectionState)
+	err := DBValues.Add(testStateArray, DBValues.CollectionState)
 	if err != nil {
 		t.Error(err)
 	}
@@ -242,21 +200,7 @@ func TestPlaneInfoHandler(t *testing.T) {
 }
 
 func TestPlaneFieldHandler(t *testing.T) {
-	// Setup
-	DBValues = Database{
-		HostURL:           "mongodb://localhost",
-		DatabaseName:      "testing",
-		CollectionState:   "testState",
-		CollectionAirport: "testAirport",
-		CollectionFlight:  "testFlight",
-	}
-
-	session, err := mgo.Dial(DBValues.HostURL)
-	if err != nil {
-		t.Error(err)
-	}
-	defer session.Close()
-
+	DBValues = *setupDB(t)
 	defer tearDownDB(t, &DBValues)
 
 	DBValues.Init()
@@ -269,7 +213,7 @@ func TestPlaneFieldHandler(t *testing.T) {
 	var testStateArray []interface{}
 	testStateArray = append(testStateArray, testState)
 
-	err = DBValues.Add(testStateArray, DBValues.CollectionState)
+	err := DBValues.Add(testStateArray, DBValues.CollectionState)
 	if err != nil {
 		t.Error(err)
 	}
