@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/globalsign/mgo"
-	//"github.com/globalsign/mgo/bson"
+	"github.com/globalsign/mgo/bson"
 )
 
 func setupDB(t *testing.T) *Database {
@@ -93,13 +93,8 @@ func TestGetAirport(t *testing.T) {
 		t.Error("There should not have been any errors!")
 	}
 
-	// FindData := bson.M{"country":"Mekka"}
+	FindData := bson.M{"country": "Mekka"}
 
-	var FindData map[string]interface{}
-
-	FindData = make(map[string]interface{})
-	FindData["Country"] = "Mekka"
-	/* // TODO: Fix this test
 		a, err := db.GetAirport(FindData)
 		if err != nil {
 			t.Errorf("Error in retrival of Country, %s", err)
@@ -107,7 +102,7 @@ func TestGetAirport(t *testing.T) {
 
 		if a[0] != testAirport1 {
 			t.Error("Incorrect airport was returned")
-		}*/
+	}
 }
 
 func TestGetPlanes(t *testing.T) {
