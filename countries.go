@@ -192,7 +192,7 @@ var Country = []string{
 	"Sri_Lanka",
 	"Cambodia",
 	"Bangladesh",
-	"Honh_Kong",
+	"Hong_Kong",
 	"Laos",
 	"Macau",
 	"Nepal",
