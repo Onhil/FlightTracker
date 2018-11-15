@@ -145,29 +145,12 @@ func (db *Database) GetPlanes(find bson.M) ([]Planes, error) {
 	var f []Flight
 	var err error
 
-	if s, _ = db.GetState(find); err != nil {
-		fmt.Println(err)
+	if s, err = db.GetState(find); err != nil {
+		return []Planes{}, err
 	}
-	if f, _ = db.GetFlight(find); err != nil {
-		fmt.Println(err)
-	}
-	if s != nil && f != nil {
-		// Merges states and flight together
+	if f, err = db.GetFlight(nil); err != nil {
 		planes := mergeStatesAndFlights(s, f)
 		return planes, nil
-	}
-	// Returns all flights if find parameter resulted in none
-	if s != nil && f == nil {
-		if f, err = db.GetFlight(nil); err != nil {
-			fmt.Println(err)
-		}
-		// Returns all states if find parameter resulted in none
-	} else if s == nil && f != nil {
-		if s, err = db.GetState(nil); err != nil {
-			fmt.Println(err)
-		}
-	} else {
-		return []Planes{}, errors.New("Nothing found in States or Flights with those parameters")
 	}
 
 	// Merges states and flight together
