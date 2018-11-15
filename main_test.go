@@ -506,7 +506,7 @@ func TestAirportInCountryHandler(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	
+
 	resp, err = http.Get(ts.URL + "/lkdslkklf")
 
 	if resp.StatusCode != http.StatusBadRequest {
