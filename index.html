@@ -9,14 +9,16 @@
 <script>
 
 
-
+//Displays planes and airports on map
 function myMap() {
+//Sets the maps start properties 
 var mapProp= {
     center:new google.maps.LatLng(51.508742,-0.120850),
     zoom:5,
 };
+//Creates the map
 var map=new google.maps.Map(document.getElementById("map"),mapProp);
-
+//Creates a infowindow to display info about plane and airport
 var infowindow = new google.maps.InfoWindow();
 
 
@@ -26,18 +28,19 @@ var infowindow = new google.maps.InfoWindow();
 
 
 
-
+//Loops through all planes
 {{range $key, $value := .Planes}}
-
+//Sets the latitude and longitude of a plane
 var pos = {lat: {{$value.Latitude}}, lng: {{$value.Longitude}}};
 
+//Gets a image according to rotation of plane
 var img = {
     url: "https://raw.githubusercontent.com/Onhil/FlightTracker/master/Pictures/plane" + Math.floor({{$value.TrueTrack}}) + ".png",
 }
-
+//Creates marker
 var marker = new google.maps.Marker({position: pos, icon: img, map: map});
 
-
+//Set all the variables from plane to show in infowindow
 var callsign = {{$value.State.Callsign}} 
 var icao24 = {{$value.State.Icao24}}
 var country = {{$value.OriginCountry}}
@@ -49,11 +52,12 @@ var arrAirport = {{$value.EstArrivalAirport}}
 var deprtAirport = {{$value.EstDepartureAirport}}
 var lastContact = {{$value.LastSeen}}
 
-
+//Content of infowindow
 var content = "Icao24: " + icao24 + '<br>' + "Callsign: " + callsign + '<br>'+ "Country of origin: " + country + '<br>'
 + "Barometric Altitude: " + baroalt + "m" + '<br>' + "Geo Altitude: " + geoAltitude + "m" + '<br>' + "Vertical speed: " + verticalspeed + " m/s"
 +  '<br>' + "Arrival airport: " + arrAirport + '<br>' + "Departure airport: " + deprtAirport + '<br>' + "Last Contact: " + lastContact
 
+//Creates an event when a plane is clicked on to show infowindow
 google.maps.event.addListener(marker, 'click', (function(marker, content, infowindow) {
   return function(){
   infowindow.setContent(content);
@@ -66,18 +70,19 @@ google.maps.event.addListener(marker, 'click', (function(marker, content, infowi
 
 
 
-
+//Loops through all airports
 {{range $key, $value := .Airports}}
-
+//Set latitiude and longitude of a airport
 var pos = {lat: {{$value.Latitude}}, lng: {{$value.Longitude}}};
 
+//Get the icon for a airport from github
 var img = {
     url: "https://raw.githubusercontent.com/Onhil/FlightTracker/master/Pictures/Airport.png"
 }
-
+//Creates the marker
 var marker = new google.maps.Marker({position: pos, icon: img, map: map});
 
-
+//Sets all the variables to be in infowindow
 var name = {{$value.Name}}
 var city= {{$value.City}}
 var country = {{$value.Country}}
@@ -85,9 +90,11 @@ var iata = {{$value.IATA}}
 var icao = {{$value.ICAO}}
 var timezone = {{$value.Timezone}}
 
+//Content of infowindow
 var content = "Name: " + name + '<br>' + "City: " + city + '<br>' + "Country: " + country + '<br>' +
 "IATA: " + iata + '<br>' + "ICAO: " + icao + '<br>' + "Timezone: " + timezone
 
+//Event when aiport is clicked to show infowindow
 google.maps.event.addListener(marker, 'click', (function(marker, content, infowindow) {
   return function(){
   infowindow.setContent(content);
