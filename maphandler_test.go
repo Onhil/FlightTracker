@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	)
+)
 
 func TestPlaneHandler(t *testing.T) {
 	DBValues := setupDB(t)
@@ -87,7 +87,9 @@ func TestCountryMapHandler(t *testing.T) { // The function to be tested is not y
 
 	var sarray []interface{}
 	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	testState1 := State{"1", "2", "3", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
 	sarray = append(sarray, testState)
+	sarray = append(sarray, testState1)
 
 	err := DBValues.Add(sarray, DBValues.CollectionState)
 
@@ -97,7 +99,9 @@ func TestCountryMapHandler(t *testing.T) { // The function to be tested is not y
 
 	var testFlightArray []interface{}
 	testFlight := Flight{"A", 1, "GJOV", 1, "BARD", "B"}
+	testFlight1 := Flight{"A", 1, "dsfdsffd", 1, "asddf", "2"}
 	testFlightArray = append(testFlightArray, testFlight)
+	testFlightArray = append(testFlightArray, testFlight1)
 
 	err = DBValues.Add(testFlightArray, DBValues.CollectionFlight)
 
@@ -139,8 +143,84 @@ func TestCountryMapHandler(t *testing.T) { // The function to be tested is not y
 	if resp.StatusCode != http.StatusBadRequest {
 		t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, resp.StatusCode)
 	}
+	resp, err = http.Get(ts.URL + "/1")
+
+	if err != nil {
+		t.Errorf("Error creating the POST request, %s", err)
+	}
+
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, resp.StatusCode)
+	}
 }
 
 func TestPlaneMapHandler(t *testing.T) { // The function to be tested is not yet implemented
+	DBValues := setupDB(t)
+	defer tearDownDB(t, DBValues)
+
+	DBValues.Init()
+	if DBValues.Count(DBValues.CollectionState) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	var testFlightArray []interface{}
+	testFlight := Flight{"A", 1, "GJOV", 1, "BARD", "B"}
+	testFlight1 := Flight{"A", 1, "dsfdsffd", 1, "asddf", "2"}
+	testFlightArray = append(testFlightArray, testFlight)
+	testFlightArray = append(testFlightArray, testFlight1)
+
+	err := DBValues.Add(testFlightArray, DBValues.CollectionFlight)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	testAirport1 := Airport{1, "Reku", "Gjovik", "Mekka", "GJO", "GJOV", float64(10), float64(24), float64(500), "100", "E", "Norway/Oslo", "airport", "test"}
+	testAirport2 := Airport{2, "A", "Bardufoss", "Norway", "BAR", "BARD", float64(10), float64(24), float64(500), "100", "E", "Norway/Oslo", "airport", "test"}
+
+	var d []interface{}
+	d = append(d, testAirport1)
+	d = append(d, testAirport2)
+
+	err = DBValues.Add(d, DBValues.CollectionAirport)
+
+	if err != nil {
+		t.Error("There should not have been any errors!")
+	}
+
+	var sarray []interface{}
+	testState := State{"A", "B", "Reku", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	testState1 := State{"1", "2", "Reku", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	sarray = append(sarray, testState)
+	sarray = append(sarray, testState1)
+
+	err = DBValues.Add(sarray, DBValues.CollectionState)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	ts := httptest.NewServer(http.HandlerFunc(CountryMapHandler))
+	defer ts.Close()
+
+	resp, err := http.Get(ts.URL + "/Reku")
+
+	if err != nil {
+		t.Errorf("Error creating the POST request, %s", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusOK, resp.StatusCode)
+	}
+
+	resp, err = http.Get(ts.URL + "/asfgdfggdf")
+
+	if err != nil {
+		t.Errorf("Error creating the POST request, %s", err)
+	}
+
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, resp.StatusCode)
+	}
 
 }
