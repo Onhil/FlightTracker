@@ -13,39 +13,42 @@ func PlaneHandler(w http.ResponseWriter, r *http.Request) {
 
 	var pllanes []Planes
 	var airrports []Airport
-
+	//Gets all the planes from database
 	pllanes, err := DBValues.GetPlanes(nil)
 	if err != nil {
 		// TODO better error
 		http.Error(w, "Error not able to get planes", http.StatusBadRequest)
 		return
 	}
+	//Gets all the airports from database
 	airrports, err = DBValues.GetAirport(nil)
 	if err != nil {
 		// TODO better error
 		http.Error(w, "Error not able to get airports", http.StatusBadRequest)
 		return
 	}
-
+	//maps so that the html template will loop through all airports and plans correctly
 	planes := make(map[int]Planes)
 	airports := make(map[int]Airport)
 
+	//Puts all the planes in the map
 	for i := 0; i < len(pllanes); i++ {
 		planes[i] = pllanes[i]
 	}
-
+	//Puts all the airports in the map
 	for i := 0; i < len(airrports); i++ {
 		airports[i] = airrports[i]
 	}
-
+	//Creates the struct that will be put in html template
 	p := Markers{Title: "Plz Work", Planes: planes, Airports: airports}
-
+	//Parses html file
 	t, err := template.ParseFiles("index.html")
 	if err != nil {
 		// TODO better error
 		http.Error(w, "Error in parsing index", http.StatusBadRequest)
 		return
 	}
+	//Displays all planes and airports
 	err = t.Execute(w, p)
 	if err != nil {
 		// TODO better error
@@ -59,31 +62,31 @@ func PlaneMapHandler(w http.ResponseWriter, r *http.Request) {
 	//Show plane
 	//Show arrival and departure airport
 	parts := strings.Split(r.URL.Path, "/")
-
+	//Gets icao from url
 	icao24 := parts[len(parts)-1]
 
 	var pllanes []Planes
 	var airrports []Airport
 	var airport []Airport
-
+	//Gets specific plane from database
 	pllanes, err := DBValues.GetPlanes(bson.M{"icao24": icao24})
 	if err != nil {
 		http.Error(w, "Error getting planes", http.StatusBadRequest)
 		return
 	}
-
+	//Check if plane was returned
 	if len(pllanes) == 0 {
 		http.Error(w, "Error no plane with that icao", http.StatusBadRequest)
 		return
 	}
-
+	//Gets arrival aiport
 	airport, err = DBValues.GetAirport(bson.M{"icao": pllanes[0].EstArrivalAirport})
 	if err != nil {
 		http.Error(w, "Error getting airport", http.StatusBadRequest)
 		return
 	}
 	airrports = append(airrports, airport...)
-
+	//Gets departure airport
 	airport, err = DBValues.GetAirport(bson.M{"icao": pllanes[0].EstDepartureAirport})
 	if err != nil {
 		http.Error(w, "Error getting airport", http.StatusBadRequest)
@@ -94,9 +97,9 @@ func PlaneMapHandler(w http.ResponseWriter, r *http.Request) {
 
 	planes := make(map[int]Planes)
 	airports := make(map[int]Airport)
-
+	//Put plane in map
 	planes[0] = pllanes[0]
-
+	//Puts all the airports in map
 	for i := 0; i < len(airrports)-1; i++ {
 		airports[i] = airrports[i]
 	}
@@ -125,19 +128,19 @@ func CountryMapHandler(w http.ResponseWriter, r *http.Request) {
 
 	var pllanes []Planes
 	var airrports []Airport
-
+	//Gets country from url
 	country := parts[len(parts)-1]
-
+	//Gets country from DB
 	pllanes, _ = DBValues.GetPlanes(bson.M{"origincountry": country})
 	airrports, _ = DBValues.GetAirport(nil)
 
 	planes := make(map[int]Planes)
 	airports := make(map[int]Airport)
-
+	//Put planes in map
 	for i := 0; i < len(pllanes); i++ {
 		planes[i] = pllanes[i]
 	}
-
+	//Put airport in map
 	for i := 0; i < len(airrports); i++ {
 		airports[i] = airrports[i]
 	}
