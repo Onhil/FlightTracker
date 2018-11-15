@@ -179,6 +179,8 @@ func (db *Database) GetPlanes(find bson.M) ([]Planes, error) {
 	return planes, nil
 }
 
+// Checks wether or not result interface is nil
+// Or if it contains nil
 func errorCheck(result interface{}) error {
 	if reflect.ValueOf(result).IsNil() || result == nil {
 		return errors.New("Nothing returned from query")
