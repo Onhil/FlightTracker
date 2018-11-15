@@ -64,8 +64,6 @@ func PlaneListHandler(w http.ResponseWriter, r *http.Request) {
 
 // PlaneInfoHandler Returns information about plane
 func PlaneInfoHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	parts := strings.Split(r.URL.Path, "/")
 
 	icao24 := parts[len(parts)-1]
@@ -76,19 +74,11 @@ func PlaneInfoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	PlaneJSON, err := json.Marshal(temp)
-	if err != nil {
-		http.Error(w, "Error parsing plane info", http.StatusBadRequest)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-	w.Write(PlaneJSON)
+	render.JSON(w, r, temp)
 }
 
 // PlaneFieldHandler Returns information about a certain field for the plane
 func PlaneFieldHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	parts := strings.Split(r.URL.Path, "/")
 
 	icao24 := parts[len(parts)-2]
@@ -133,19 +123,11 @@ func PlaneFieldHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error no such field", http.StatusBadRequest)
 		return
 	}
-	FieldJSON, err := json.Marshal(Response)
-	if err != nil {
-		http.Error(w, "Error parsing field", http.StatusBadRequest)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-	w.Write(FieldJSON)
+	render.JSON(w, r, Response)
 }
 
 // CountryHandler Returns all planes from a country
 func CountryHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	parts := strings.Split(r.URL.Path, "/")
 
 	country := parts[len(parts)-1]
@@ -155,20 +137,8 @@ func CountryHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unable to find any Planes with given OriginCountry", http.StatusBadRequest)
 		return
 	}
-	PlaneNames := []string{}
 
-	for i := 0; i < len(plane); i++ {
-		PlaneNames = append(PlaneNames, plane[i].Icao24)
-	}
-
-	portJSON, err := json.Marshal(PlaneNames)
-	if err != nil {
-		http.Error(w, "Unable to parse the Plane names", http.StatusBadRequest)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(portJSON)
+	render.JSON(w, r, plane)
 }
 
 // AirportListHandler Lists all airports by ICAO
@@ -178,20 +148,8 @@ func AirportListHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unable to find any Airports with the given ICAO", http.StatusBadRequest)
 		return
 	}
-	AirportIcao := []string{}
 
-	for i := 0; i < len(airports); i++ {
-		AirportIcao = append(AirportIcao, airports[i].ICAO)
-	}
-
-	portJSON, err := json.Marshal(AirportIcao)
-	if err != nil {
-		http.Error(w, "Unable to parse the Airport names", http.StatusBadRequest)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(portJSON)
+	render.JSON(w, r, airports)
 }
 
 // AirportInfoHandler Returns information about the airport and the ICAO24 of all planes that arrives and depart from it
@@ -208,14 +166,7 @@ func AirportInfoHandler(w http.ResponseWriter, r *http.Request) {
 
 	port := airport[0] //Convert array to single airport, in case of more than one airport with the ICAO which should not happen
 
-	portJSON, err := json.Marshal(port)
-	if err != nil {
-		http.Error(w, "Unable to parse the Airport", http.StatusBadRequest)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(portJSON)
+	render.JSON(w, r, port)
 }
 
 // AirportFieldHandler Returns the field information for the airport
@@ -267,14 +218,7 @@ func AirportFieldHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	portJSON, err := json.Marshal(Response)
-	if err != nil {
-		http.Error(w, "Unable to parse the Airport", http.StatusBadRequest)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(portJSON)
+	render.JSON(w, r, Response)
 }
 
 // AirportCountryHandler Returns all countries with an airport
@@ -284,9 +228,7 @@ func AirportCountryHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unable to parse the countries", http.StatusBadRequest)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(CountryJSON)
+	render.JSON(w, r, CountryJSON)
 }
 
 // AirportInCountryHandler Names all the airports in the given country
@@ -300,20 +242,7 @@ func AirportInCountryHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unable to find any Airports in the country", http.StatusBadRequest)
 		return
 	}
-	AirportNames := []string{}
-
-	for i := 0; i < len(airports); i++ {
-		AirportNames = append(AirportNames, airports[i].ICAO)
-	}
-
-	portJSON, err := json.Marshal(AirportNames)
-	if err != nil {
-		http.Error(w, "Unable to parse the Airport names", http.StatusBadRequest)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(portJSON)
+	render.JSON(w, r, airports)
 }
 
 // main
