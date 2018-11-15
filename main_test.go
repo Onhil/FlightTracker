@@ -481,9 +481,62 @@ func TestAirportFieldHandler(t *testing.T) {
 }
 
 func TestAirportCountryHandler(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(AirportCountryHandler))
+	defer ts.Close()
+	resp, err := http.Get(ts.URL)
+
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusOK, resp.StatusCode)
+	}
+
+	if err != nil {
+		t.Error(err)
+	}
 
 }
 
 func TestAirportInCountryHandler(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
 
+	db.Init()
+	if db.Count(db.CollectionAirport) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	testAirport1 := Airport{1, "Gjovik Airport", "Gjovik", "Mekka", "GJO", "GJOV", float64(10), float64(24), float64(500), "100", "E", "Norway/Oslo", "airport", "test"}
+
+	var d []interface{}
+	d = append(d, testAirport1)
+
+	err := db.Add(d, db.CollectionAirport)
+
+	if err != nil {
+		t.Error("There should not have been any errors!")
+	}
+	if db.Count(db.CollectionAirport) != 1 {
+		t.Error("Database not properly initialized, database count should be 3")
+	}
+
+	ts := httptest.NewServer(http.HandlerFunc(AirportInCountryHandler))
+	defer ts.Close()
+	resp, err := http.Get(ts.URL + "/Mekka")
+
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusOK, resp.StatusCode)
+	}
+
+	if err != nil {
+		t.Error(err)
+	}
+/* // TODO: Make AirportInCountryHandler return an error when asking for a country without airports(or rubbish)
+	resp, err = http.Get(ts.URL + "/lkdslkklf")
+
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, resp.StatusCode)
+	}
+
+	if err != nil {
+		t.Error(err)
+	}*/
 }
