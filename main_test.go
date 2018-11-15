@@ -224,7 +224,7 @@ func TestPlaneInfoHandler(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-/* // TODO: Make the funciton being tested return an error when it should
+	/* // TODO: Make the funciton being tested return an error when it should
 	resp, err = http.Get(ts.URL + "/skjahfhjksdfukhj")
 	if resp.StatusCode != http.StatusBadRequest {
 		t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, resp.StatusCode)
@@ -357,7 +357,7 @@ func TestAirportListHandler(t *testing.T) {
 	}
 
 	// Actual test
-	ts := httptest.NewServer(http.HandlerFunc(CountryHandler))
+	ts := httptest.NewServer(http.HandlerFunc(AirportListHandler))
 	defer ts.Close()
 	resp, err := http.Get(ts.URL + "")
 
@@ -371,7 +371,54 @@ func TestAirportListHandler(t *testing.T) {
 }
 
 func TestAirportInfoHandler(t *testing.T) {
+	db := setupDB(t)
+	defer tearDownDB(t, db)
 
+	db.Init()
+	if db.Count(db.CollectionAirport) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	testAirport1 := Airport{1, "Gjovik Airport", "Gjovik", "Mekka", "GJO", "GJOV", float64(10), float64(24), float64(500), "100", "E", "Norway/Oslo", "airport", "test"}
+	testAirport2 := Airport{2, "Bardufoss Airport", "Bardufoss", "Norway", "BAR", "BARD", float64(10), float64(24), float64(500), "100", "E", "Norway/Oslo", "airport", "test"}
+	testAirport3 := Airport{3, "Molvik Airport", "Molvik", "Norway", "MOL", "MOLV", float64(10), float64(24), float64(500), "100", "E", "Norway/Oslo", "airport", "test"}
+
+	var d []interface{}
+	d = append(d, testAirport1)
+	d = append(d, testAirport2)
+	d = append(d, testAirport3)
+
+	err := db.Add(d, db.CollectionAirport)
+
+	if err != nil {
+		t.Error("There should not have been any errors!")
+	}
+	if db.Count(db.CollectionAirport) != 3 {
+		t.Error("Database not properly initialized, database count should be 3")
+	}
+
+	// Actual test
+	ts := httptest.NewServer(http.HandlerFunc(AirportInfoHandler))
+	defer ts.Close()
+	resp, err := http.Get(ts.URL + "/GJOV")
+
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusOK, resp.StatusCode)
+	}
+
+	if err != nil {
+		t.Error(err)
+	}
+	/*	// TODO: make AirportInfoHandler handle errors correctly
+	resp, err = http.Get(ts.URL + "/jklfdkjd") // error originates here!
+
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, resp.StatusCode)
+	}
+
+	if err != nil {
+		t.Error(err)
+	}*/
 }
 
 func TestAirportFieldHandler(t *testing.T) {
