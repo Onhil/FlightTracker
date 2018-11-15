@@ -6,19 +6,6 @@ import (
 	"testing"
 )
 
-func TestPlaneHandler(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(PlaneHandler))
-	defer ts.Close()
-
-	resp, err := http.Get(ts.URL + "/")
-	if err != nil {
-		t.Errorf("Error creating the POST request, %s", err)
-	}
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("Expected StatusCode %d, received %d", http.StatusOK, resp.StatusCode)
-	}
-}
-
 func TestOriginCountryHandler(t *testing.T) {
 	// Starts the database
 	DBValues = *setupDB(t)
@@ -279,10 +266,6 @@ func TestPlaneFieldHandler(t *testing.T) {
 	}
 }
 
-func TestPlaneMapHandler(t *testing.T) { // The function to be tested is not yet implemented
-
-}
-
 func TestCountryHandler(t *testing.T) {
 	DBValues = *setupDB(t)
 	defer tearDownDB(t, &DBValues)
@@ -322,10 +305,6 @@ func TestCountryHandler(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-}
-
-func TestCountryMapHandler(t *testing.T) { // The function to be tested is not yet implemented
-
 }
 
 func TestAirportListHandler(t *testing.T) {
