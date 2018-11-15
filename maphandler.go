@@ -10,7 +10,6 @@ import (
 
 // PlaneHandler is the function which handles planes and displays a google map, it is currently in an early stage of development.
 func PlaneHandler(w http.ResponseWriter, r *http.Request) {
-
 	var pllanes []Planes
 	var airrports []Airport
 	//Gets all the planes from database
