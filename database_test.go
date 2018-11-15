@@ -49,14 +49,16 @@ func TestAdd(t *testing.T) {
 
 	var sarray []interface{}
 	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	testState1 := State{"D", "E", "F", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
 	sarray = append(sarray, testState)
+	sarray = append(sarray, testState1)
 
 	err := db.Add(sarray, db.CollectionState)
 
 	if err != nil {
 		t.Error(err)
 	}
-	if db.Count(db.CollectionState) != 1 {
+	if db.Count(db.CollectionState) != 2 {
 		t.Error("Database not properly initialized, database count should be 1")
 	}
 }
@@ -73,7 +75,11 @@ func TestGetFlight(t *testing.T) {
 
 	var testFlightArray []interface{}
 	testFlight := Flight{"A", 1, "B", 1, "Reku", "C"}
+	testFlight1 := Flight{"D", 1, "E", 1, "Rek", "F"}
+	testFlight2 := Flight{"G", 1, "H", 1, "Reku", "I"}
 	testFlightArray = append(testFlightArray, testFlight)
+	testFlightArray = append(testFlightArray, testFlight1)
+	testFlightArray = append(testFlightArray, testFlight2)
 
 	err := db.Add(testFlightArray, db.CollectionFlight)
 
@@ -95,6 +101,10 @@ func TestGetFlight(t *testing.T) {
 	}
 
 	if a[0] != testFlight {
+		t.Error("Incorrect airport was returned")
+	}
+
+	if len(a) != 2 {
 		t.Error("Incorrect airport was returned")
 	}
 }
@@ -165,15 +175,19 @@ func TestGetAirport(t *testing.T) {
 		t.Error("There should not have been any errors!")
 	}
 
-	FindData := bson.M{"country": "Mekka"}
+	FindData := bson.M{"country": "Norway"}
 
 	a, err := db.GetAirport(FindData)
 	if err != nil {
 		t.Errorf("Error in retrival of Country, %s", err)
 	}
 
-	if a[0] != testAirport1 {
+	if a[0] != testAirport2 {
 		t.Error("Incorrect airport was returned")
+	}
+
+	if len(a) != 2 {
+		t.Error("Incorrect number of airports was returned")
 	}
 }
 
@@ -187,15 +201,22 @@ func TestGetPlanes(t *testing.T) {
 	}
 
 	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	testState1 := State{"D", "E", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	testState2 := State{"G", "H", "I", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+
 	var testStateArray []interface{}
 	testStateArray = append(testStateArray, testState)
+	testStateArray = append(testStateArray, testState1)
+	testStateArray = append(testStateArray, testState2)
+
 	p := Planes{testState, Flight{}}
 	err := db.Add(testStateArray, db.CollectionState)
 	if err != nil {
 		t.Error(err)
 	}
-	if db.Count(db.CollectionState) != 1 {
-		t.Error("Database not properly initialized, database count should be 1")
+
+	if db.Count(db.CollectionState) != 3 {
+		t.Error("Database not properly initialized, database count should be 3")
 	}
 	FindData := bson.M{"origincountry": "C"}
 
@@ -206,6 +227,10 @@ func TestGetPlanes(t *testing.T) {
 
 	if s[0] != p {
 		t.Error("Incorrect State were returned")
+	}
+
+	if len(s) != 2 {
+		t.Error("Incorrect number of State were returned")
 	}
 }
 
