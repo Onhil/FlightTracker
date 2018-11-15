@@ -224,7 +224,6 @@ func TestPlaneInfoHandler(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	/* // TODO: Make the funciton being tested return an error when it should
 	resp, err = http.Get(ts.URL + "/skjahfhjksdfukhj")
 	if resp.StatusCode != http.StatusBadRequest {
 		t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, resp.StatusCode)
@@ -232,7 +231,7 @@ func TestPlaneInfoHandler(t *testing.T) {
 
 	if err != nil {
 		t.Error(err)
-	}*/
+	}
 }
 
 func TestPlaneFieldHandler(t *testing.T) {
@@ -410,15 +409,15 @@ func TestAirportInfoHandler(t *testing.T) {
 		t.Error(err)
 	}
 	/*	// TODO: make AirportInfoHandler handle errors correctly
-	resp, err = http.Get(ts.URL + "/jklfdkjd") // error originates here!
+		resp, err = http.Get(ts.URL + "/jklfdkjd") // error originates here!
 
-	if resp.StatusCode != http.StatusBadRequest {
-		t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, resp.StatusCode)
-	}
+		if resp.StatusCode != http.StatusBadRequest {
+			t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, resp.StatusCode)
+		}
 
-	if err != nil {
-		t.Error(err)
-	}*/
+		if err != nil {
+			t.Error(err)
+		}*/
 }
 
 func TestAirportFieldHandler(t *testing.T) {
@@ -459,7 +458,7 @@ func TestAirportFieldHandler(t *testing.T) {
 
 	if err != nil {
 		t.Error(err)
-	}/* // TODO: Make tAirportFieldHandler handle errors correctly
+	} /* // TODO: Make tAirportFieldHandler handle errors correctly
 	resp, err = http.Get(ts.URL + "/GJOV/Ijsdkjjk")
 
 	if resp.StatusCode != http.StatusBadRequest {
@@ -529,7 +528,7 @@ func TestAirportInCountryHandler(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-/* // TODO: Make AirportInCountryHandler return an error when asking for a country without airports(or rubbish)
+	/* // TODO: Make AirportInCountryHandler return an error when asking for a country without airports(or rubbish)
 	resp, err = http.Get(ts.URL + "/lkdslkklf")
 
 	if resp.StatusCode != http.StatusBadRequest {
