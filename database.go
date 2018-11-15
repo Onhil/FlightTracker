@@ -98,7 +98,7 @@ func (db *Database) GetFlight(findData bson.M) ([]Flight, error) {
 	var flights []Flight
 	err = session.DB(db.DatabaseName).C(db.CollectionFlight).Find(findData).All(&flights)
 
-	return flights, err
+	return flights, errorCheck(flights)
 }
 
 // GetState accepts bson.M{} to find all flights with choosen paramaters
