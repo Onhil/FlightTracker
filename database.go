@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"reflect"
 
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
@@ -114,8 +115,10 @@ func (db *Database) GetState(findData bson.M) ([]State, error) {
 	var state []State
 
 	err = session.DB(db.DatabaseName).C(db.CollectionState).Find(findData).All(&state)
-
-	return state, err
+	if err != nil {
+		panic(err)
+	}
+	return state, errorCheck(state)
 }
 
 // GetAirport accepts bson.M{} to find all Airports with choosen paramters
@@ -132,8 +135,10 @@ func (db *Database) GetAirport(findData bson.M) ([]Airport, error) {
 	var port []Airport
 
 	err = session.DB(db.DatabaseName).C(db.CollectionAirport).Find(findData).All(&port)
-
-	return port, err
+	if err != nil {
+		panic(err)
+	}
+	return port, errorCheck(port)
 }
 
 // GetPlanes accepts bson.M{} to find all flights with choosen paramaters
@@ -172,4 +177,11 @@ func (db *Database) GetPlanes(find bson.M) ([]Planes, error) {
 	// Merges states and flight together
 	planes := mergeStatesAndFlights(s, f)
 	return planes, nil
+}
+
+func errorCheck(result interface{}) error {
+	if reflect.ValueOf(result).IsNil() || result == nil {
+		return errors.New("Nothing returned from query")
+	}
+	return nil
 }

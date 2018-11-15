@@ -224,7 +224,7 @@ func TestPlaneInfoHandler(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-/* // TODO: Make the funciton being tested return an error when it should
+
 	resp, err = http.Get(ts.URL + "/skjahfhjksdfukhj")
 	if resp.StatusCode != http.StatusBadRequest {
 		t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, resp.StatusCode)
@@ -232,7 +232,7 @@ func TestPlaneInfoHandler(t *testing.T) {
 
 	if err != nil {
 		t.Error(err)
-	}*/
+	}
 }
 
 func TestPlaneFieldHandler(t *testing.T) {
