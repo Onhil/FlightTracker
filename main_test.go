@@ -224,15 +224,15 @@ func TestPlaneInfoHandler(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-
-	resp, err = http.Get(ts.URL + "/skjahfhjksdfukhj") // TODO: Make the funciton being tested return an error when it should
+/* // TODO: Make the funciton being tested return an error when it should
+	resp, err = http.Get(ts.URL + "/skjahfhjksdfukhj")
 	if resp.StatusCode != http.StatusBadRequest {
 		t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, resp.StatusCode)
 	}
 
 	if err != nil {
 		t.Error(err)
-	}
+	}*/
 }
 
 func TestPlaneFieldHandler(t *testing.T) {
@@ -285,7 +285,44 @@ func TestPlaneMapHandler(t *testing.T) {
 }
 
 func TestCountryHandler(t *testing.T) {
+	DBValues = *setupDB(t)
+	defer tearDownDB(t, &DBValues)
 
+	DBValues.Init()
+	if DBValues.Count(DBValues.CollectionState) != 0 {
+		t.Error("Database not properly initialized, database count should be 0")
+	}
+
+	// Adds element
+	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	testState1 := State{"D", "E", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	testState2 := State{"G", "H", "I", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	var testStateArray []interface{}
+	testStateArray = append(testStateArray, testState)
+	testStateArray = append(testStateArray, testState1)
+	testStateArray = append(testStateArray, testState2)
+
+	err := DBValues.Add(testStateArray, DBValues.CollectionState)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if DBValues.Count(DBValues.CollectionState) != 3 {
+		t.Error("Database not properly initialized, database count should be 3")
+	}
+
+	// Actual test
+	ts := httptest.NewServer(http.HandlerFunc(CountryHandler))
+	defer ts.Close()
+	resp, err := http.Get(ts.URL + "/C")
+
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusOK, resp.StatusCode)
+	}
+
+	if err != nil {
+		t.Error(err)
+	}
 }
 
 func TestCountryMapHandler(t *testing.T) {

@@ -109,19 +109,23 @@ func TestGetState(t *testing.T) {
 	}
 
 	testState := State{"A", "B", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	testState1 := State{"D", "E", "C", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
+	testState2 := State{"F", "G", "H", float64(18), float64(12), float64(400), false, float64(250), float64(19), float64(18), float64(16), "", true}
 	var testStateArray []interface{}
 	testStateArray = append(testStateArray, testState)
+	testStateArray = append(testStateArray, testState1)
+	testStateArray = append(testStateArray, testState2)
 
 	err := db.Add(testStateArray, db.CollectionState)
 	if err != nil {
 		t.Error(err)
 	}
 
-	if db.Count(db.CollectionState) != 1 {
-		t.Error("Database not properly initialized, database count should be 1")
+	if db.Count(db.CollectionState) != 3 {
+		t.Error("Database not properly initialized, database count should be 3")
 	}
 
-	FindData := bson.M{"callsign": "B"}
+	FindData := bson.M{"origincountry": "C"}
 
 	s, err := db.GetState(FindData)
 	if err != nil {
@@ -130,6 +134,10 @@ func TestGetState(t *testing.T) {
 
 	if s[0] != testState {
 		t.Error("Incorrect state was returned")
+	}
+
+	if len(s) != 2 {
+		t.Error("Incorrect number of states were returned!")
 	}
 }
 
