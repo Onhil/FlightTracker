@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"strings"
@@ -10,7 +11,6 @@ import (
 
 // PlaneHandler is the function which handles planes and displays a google map, it is currently in an early stage of development.
 func PlaneHandler(w http.ResponseWriter, r *http.Request) {
-
 	var pllanes []Planes
 	var airrports []Airport
 	//Gets all the planes from database
@@ -79,6 +79,7 @@ func PlaneMapHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error no plane with that icao", http.StatusBadRequest)
 		return
 	}
+
 	//Gets arrival aiport
 	airport, err = DBValues.GetAirport(bson.M{"icao": pllanes[0].EstArrivalAirport})
 	if err != nil {
