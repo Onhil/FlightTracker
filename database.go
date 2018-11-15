@@ -115,9 +115,7 @@ func (db *Database) GetState(findData bson.M) ([]State, error) {
 	var state []State
 
 	err = session.DB(db.DatabaseName).C(db.CollectionState).Find(findData).All(&state)
-	if err != nil {
-		panic(err)
-	}
+
 	return state, errorCheck(state)
 }
 
@@ -135,9 +133,7 @@ func (db *Database) GetAirport(findData bson.M) ([]Airport, error) {
 	var port []Airport
 
 	err = session.DB(db.DatabaseName).C(db.CollectionAirport).Find(findData).All(&port)
-	if err != nil {
-		panic(err)
-	}
+
 	return port, errorCheck(port)
 }
 
