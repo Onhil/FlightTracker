@@ -92,38 +92,12 @@ func PlaneFieldHandler(w http.ResponseWriter, r *http.Request) {
 
 	plane := temp[0]
 
-	var Response interface{}
-
-	switch field {
-	case "Callsign":
-		Response = plane.Callsign
-	case "OriginCountry":
-		Response = plane.OriginCountry
-	case "Longitude":
-		Response = plane.Longitude
-	case "Latitude":
-		Response = plane.Latitude
-	case "BaroAltitude":
-		Response = plane.BaroAltitude
-	case "OnGround":
-		Response = plane.OnGround
-	case "Velocity":
-		Response = plane.Velocity
-	case "TrueTrack":
-		Response = plane.TrueTrack
-	case "VerticalRate":
-		Response = plane.VerticalRate
-	case "GeoAltitude":
-		Response = plane.GeoAltitude
-	case "Squawk":
-		Response = plane.Squawk
-	case "Spi":
-		Response = plane.Spi
-	default:
-		http.Error(w, "Error no such field", http.StatusBadRequest)
+	response, err := plane.getField(field)
+	if err != nil {
+		http.Error(w, "Unable to find Field", http.StatusBadRequest)
 		return
 	}
-	render.JSON(w, r, Response)
+	render.JSON(w, r, response)
 }
 
 // CountryHandler Returns all planes from a country
@@ -183,42 +157,12 @@ func AirportFieldHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	port := airport[0] //Convert array to single airport, in case of more than one airport with the ICAO which should not happen
-
-	var Response interface{}
-
-	switch field {
-	case "ID":
-		Response = port.ID
-	case "Name":
-		Response = port.Name
-	case "City":
-		Response = port.City
-	case "Country":
-		Response = port.Country
-	case "IATA":
-		Response = port.IATA
-	case "Latitude":
-		Response = port.Latitude
-	case "Longitude":
-		Response = port.Longitude
-	case "Altitude":
-		Response = port.Altitude
-	case "Timezone":
-		Response = port.Timezone
-	case "DST":
-		Response = port.DST
-	case "Tz_Database_Timezone":
-		Response = port.TzDatabaseTimezone
-	case "Type":
-		Response = port.Type
-	case "Source":
-		Response = port.Source
-	default:
-		http.Error(w, "Field is not included in Airport!", http.StatusBadRequest)
+	response, err := port.getField(field)
+	if err != nil {
+		http.Error(w, "Unable to find Field", http.StatusBadRequest)
 		return
 	}
-
-	render.JSON(w, r, Response)
+	render.JSON(w, r, response)
 }
 
 // AirportCountryHandler Returns all countries with an airport

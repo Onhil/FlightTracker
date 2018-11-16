@@ -166,3 +166,27 @@ func errorCheck(result interface{}) error {
 	}
 	return nil
 }
+
+func (fieldTag *State) getField(field string) (string, error) {
+	// Returns the field that matches the given struct json tag
+	value := reflect.ValueOf(fieldTag).Elem()
+	for i := 0; i < value.NumField(); i++ {
+		if value.Type().Field(i).Tag.Get("json") == field {
+			return fmt.Sprint(value.Field(i)), nil
+		}
+
+	}
+	return "", errors.New("")
+}
+
+func (fieldTag *Airport) getField(field string) (string, error) {
+	// Returns the field that matches the given struct json tag
+	value := reflect.ValueOf(fieldTag).Elem()
+	for i := 0; i < value.NumField(); i++ {
+		if value.Type().Field(i).Tag.Get("json") == field {
+			return fmt.Sprint(value.Field(i)), nil
+		}
+
+	}
+	return "", errors.New("")
+}
