@@ -131,8 +131,14 @@ func CountryMapHandler(w http.ResponseWriter, r *http.Request) {
 	//Gets country from url
 	country := parts[len(parts)-1]
 	//Gets country from DB
-	pllanes, _ = DBValues.GetPlanes(bson.M{"origincountry": country})
-	airrports, _ = DBValues.GetAirport(nil)
+	pllanes, err := DBValues.GetPlanes(bson.M{"origincountry": country})
+	if err != nil {
+		http.Error(w, "Country not in database", http.StatusBadRequest)
+	}
+	airrports, err = DBValues.GetAirport(nil)
+	if err != nil {
+		http.Error(w, "Airports missing", http.StatusFailedDependency)
+	}
 
 	planes := make(map[int]Planes)
 	airports := make(map[int]Airport)
