@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -167,19 +166,7 @@ func AirportFieldHandler(w http.ResponseWriter, r *http.Request) {
 
 // AirportCountryHandler Returns all countries with an airport
 func AirportCountryHandler(w http.ResponseWriter, r *http.Request) {
-	
-	Countryholder := []string{}
-
-	for i := 0; i < len(Country); i++ {
-		Countryholder = append(Countryholder, Country[i])
-	}
-	
-	CountryJSON, err := json.Marshal(Countryholder)
-	if err != nil {
-		http.Error(w, "Unable to parse the countries", http.StatusBadRequest)
-		return
-	}
-	render.JSON(w, r, CountryJSON)
+	render.JSON(w, r, Country)
 }
 
 // AirportInCountryHandler Names all the airports in the given country
