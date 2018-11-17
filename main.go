@@ -167,7 +167,14 @@ func AirportFieldHandler(w http.ResponseWriter, r *http.Request) {
 
 // AirportCountryHandler Returns all countries with an airport
 func AirportCountryHandler(w http.ResponseWriter, r *http.Request) {
-	CountryJSON, err := json.Marshal(Country)
+	
+	Countryholder := []string{}
+
+	for i := 0; i < len(Country); i++ {
+		Countryholder = append(Countryholder, Country[i])
+	}
+	
+	CountryJSON, err := json.Marshal(Countryholder)
 	if err != nil {
 		http.Error(w, "Unable to parse the countries", http.StatusBadRequest)
 		return
@@ -180,6 +187,8 @@ func AirportInCountryHandler(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
 
 	country := parts[len(parts)-1]
+
+	country = strings.Replace(country, "_", " ", -1)
 
 	airports, err := DBValues.GetAirport(bson.M{"country": country})
 	if err != nil {
