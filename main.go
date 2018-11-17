@@ -105,6 +105,8 @@ func CountryHandler(w http.ResponseWriter, r *http.Request) {
 
 	country := parts[len(parts)-1]
 
+	country = strings.Replace(country, "_", " ", -1)
+
 	plane, err := DBValues.GetState(bson.M{"origincountry": country})
 	if err != nil {
 		http.Error(w, "Unable to find any Planes with given OriginCountry", http.StatusBadRequest)
