@@ -175,6 +175,8 @@ func AirportInCountryHandler(w http.ResponseWriter, r *http.Request) {
 
 	country := parts[len(parts)-1]
 
+	country = strings.Replace(country, "_", " ", -1)
+
 	airports, err := DBValues.GetAirport(bson.M{"country": country})
 	if err != nil {
 		http.Error(w, "Unable to find any Airports in the country", http.StatusBadRequest)
