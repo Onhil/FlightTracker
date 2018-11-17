@@ -100,7 +100,8 @@ func PlaneMapHandler(w http.ResponseWriter, r *http.Request) {
 
 	//Puts all the airports in map
 	//Reason for 1 = 0 instead of 0 = 0 is javascript starts counting at 1 not 0
-	if len(airports) > 0 {
+
+	if len(airrports) > 0 {
 		airports[1] = airrports[0]
 		if len(airrports) == 2 {
 			airports[2] = airrports[1]
