@@ -134,6 +134,7 @@ func CountryMapHandler(w http.ResponseWriter, r *http.Request) {
 	var airrports []Airport
 	//Gets country from url
 	country := parts[len(parts)-1]
+	country = strings.Replace(country, "_", " ", -1)
 	//Gets country from DB
 	pllanes, err := DBValues.GetPlanes(bson.M{"origincountry": country})
 	if err != nil {

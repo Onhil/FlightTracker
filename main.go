@@ -18,6 +18,8 @@ func OriginCountryHandler(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
 
 	country := parts[len(parts)-1]
+	country = strings.Replace(country, "_", " ", -1)
+
 	if data, err := DBValues.GetPlanes(bson.M{"origincountry": country}); err != nil {
 		http.Error(w, "Country not in database", http.StatusBadRequest)
 	} else {
