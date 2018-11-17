@@ -149,8 +149,8 @@ func TestCountryMapHandler(t *testing.T) { // The function to be tested is not y
 		t.Errorf("Error creating the POST request, %s", err)
 	}
 
-	if resp.StatusCode != http.StatusBadRequest {
-		t.Errorf("Expected StatusCode %d, received %d", http.StatusBadRequest, resp.StatusCode)
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("Expected StatusCode %d, received %d", http.StatusOK, resp.StatusCode)
 	}
 }
 
