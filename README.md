@@ -21,3 +21,9 @@ A web service to track fligths
 
 Demo of app
 * `https://plane-tracker-assi3.herokuapp.com/flight-tracker`
+
+
+
+
+# Time
+~ 88 hours
