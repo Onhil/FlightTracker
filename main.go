@@ -220,8 +220,8 @@ func main() {
 	router.HandleFunc("/flight-tracker/airport/{icao:[A-Z]{4}}/{field:[A-Za-z0-9]+}", AirportFieldHandler)
 	router.HandleFunc("/flight-tracker/airport/country", AirportCountryHandler)
 	router.HandleFunc("/flight-tracker/airport/country/{country:.+}", AirportInCountryHandler)
-	router.HandleFunc("/flight-tracker/{departing:[A-Z]{4}}", DepartureHandler)
-	router.HandleFunc("/flight-tracker/{arriving:[A-Z]{4}}", ArrivalHandler)
+	router.HandleFunc("/flight-tracker/departure/{departing:[A-Z]{4}}", DepartureHandler)
+	router.HandleFunc("/flight-tracker/arrival/{arriving:[A-Z]{4}}", ArrivalHandler)
 	// Handle functions
 	log.Fatal(http.ListenAndServe(":"+port, router))
 }
