@@ -20,7 +20,8 @@ A web service to track fligths
 * Not every plane has assigned airports 
 * 360 pictures to make the planes rotate
 
-## Hard aspects ###### ~~That's what she said~~
+## Hard aspects 
+###### ~~That's what she said~~
 1. We had some problems making an elegant solution so that the planes rotate, google maps does not let us rotate images in a easy way 
 unless they are svg which makes the map run at 2 frames per minute for a whole minute before the browser crashes. This is only a 
 problem when rendering 1000+ object on the map. Also we noticed a tiny bit to late that the heading of planes are given with decimal points, so when trying to get all the images it started to lag as it was trying to fetch images that didn't exist. Easy solution was to 
