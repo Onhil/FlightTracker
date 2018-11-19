@@ -31,6 +31,11 @@ just floor the heading.
 One thing we all learned was the value of communication in a team, there where some moments when we were unsure who was doing what
 so that lead to some confusion, we fixed this by having meetings often to update eachother on problems and tried to solve them togheter.
 
+## Time
+~ 88 hours
+
+
+##################
 # Map
 * `GET /flight-tracker` Map with all the planes and airports. 
 * `GET /flight-tracker/map/country/<country>` Shows all planes from the given country.
@@ -51,9 +56,3 @@ so that lead to some confusion, we fixed this by having meetings often to update
 
 Demo of app
 * `https://plane-tracker-assi3.herokuapp.com/flight-tracker`
-
-
-
-
-# Time
-~ 88 hours
