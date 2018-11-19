@@ -55,4 +55,4 @@ so that lead to some confusion, we fixed this by having meetings often to update
 * `GET /flight-tracker/airport/country/<country>` Lists all airports in a countries.
 
 Demo of app
-* `https://plane-tracker-assi3.herokuapp.com/flight-tracker`
+* https://plane-tracker-assi3.herokuapp.com/flight-tracker
