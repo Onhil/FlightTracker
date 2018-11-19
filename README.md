@@ -46,6 +46,8 @@ so that lead to some confusion, we fixed this by having meetings often to update
 * `GET /flight-tracker/country/<country>` List of all planes with `<country>` as their origin country.
 * `GET /flight-tracker/plane/<icao24>` Displays info about the plane with `<icao>` as their ICAO.
 * `GET /flight-tracker/plane/<icao24>/<field>` Displays just the information about the given `<field>`.
+* `GET /flight-tracker/derparture/[A-Z]{4}` Display all flights from an airport.
+* `GET /flight-tracker/arrival/[A-Z]{4}` Displays all flights to an airport
 
 # Airport
 * `GET /flight-tracker/airport` Lists all airports.
